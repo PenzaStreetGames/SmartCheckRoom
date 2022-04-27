@@ -1,0 +1,1 @@
+ssh -i D:/YandexDisk/Univer/Admin/pr8/key.txt hyberlet@51.250.105.61
