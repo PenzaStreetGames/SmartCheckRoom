@@ -1,83 +1,148 @@
-from sqlalchemy import Column, Integer, ForeignKey, String, Time
-from sqlalchemy.orm import declarative_base, relationship
+import time
+
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
 
-
-Base = declarative_base()
-
-
-class Hook(Base):
-    __tablename__ = "hook"
-
-    id = Column(Integer, primary_key=True)
-    hanger_id = Column(Integer, ForeignKey("hanger.id"))
-
-    hanger = relationship("Hanger", back_populates="hooks")
-    tag = relationship("Tag", back_populates="hook")
+from database.tables import Base, Hook, Hanger, Nfc, ControlBox, Tag, TagState, ControlQueue
 
 
-class Hanger(Base):
-    __tablename__ = "hanger"
+class CreateService:
 
-    id = Column(Integer, primary_key=True)
-    control_id = Column(Integer, ForeignKey("control_box.id"))
+    @staticmethod
+    def create(entity):
+        with Session(engine) as session:
+            session.add(entity)
+            session.commit()
 
-    hooks = relationship("Hook", back_populates="hanger")
-    control_box = relationship("ControlBox", back_populates="hangers")
+class DeleteService:
 
+    @staticmethod
+    def delete(entity):
+        # with Session(engine) as session:
+        session.delete(entity)
+        session.commit()
 
-class ControlBox(Base):
-    __tablename__ = "control_box"
-
-    id = Column(Integer, primary_key=True)
-
-    hangers = relationship("Hook", back_populates="control_box")
-    nfcs = relationship("Nfc", back_populates="control_box")
-
-
-class Nfc(Base):
-    __tablename__ = "nfc"
-
-    id = Column(Integer, primary_key=True)
-    control_id = Column(Integer, ForeignKey("control_box.id"))
-
-    control_box = relationship("ControlBox", back_populates="nfcs")
+    @staticmethod
+    def delete_by_id(id, classname):
+        entity = SimpleSelectService.select_by_id(id, classname)
+        DeleteService.delete(entity)
 
 
-class Tag(Base):
-    __tablename__ = "tag"
+class SimpleSelectService:
 
-    id = Column(Integer, primary_key=True)
-    state = String(10)
-    hook_id = Column(Integer, ForeignKey("hook.id"))
-
-    hook = relationship("Hook", back_populates="tag")
-
-
-class TagState(Base):
-    __tablename__ = "tag_state"
-
-    id = Column(Integer, primary_key=True)
-    tag_id = Column(Integer, ForeignKey("tag_state.id"))
-    state = String(10)
-    event_time = Time()
-
-    tag = relationship("Tag")
+    @staticmethod
+    def select_by_id(id, classname):
+        # with Session(engine) as session:
+        request = select(classname).where(classname.id == id)
+        entity = session.scalar(request)
+        session.commit()
+        return entity
 
 
-class ControlQueue(Base):
-    __tablename__ = "control_queue"
+class HookService:
 
-    id = Column(Integer, primary_key=True)
-    control_id = Column(Integer, ForeignKey("control_box.id"))
-    direction = Column(String(4))
-    position = Column(Integer)
-    tag_id = Column(Integer, ForeignKey("tag.id"))
+    @staticmethod
+    def create(id=0, hanger_id=0):
+        hook = Hook(id=id, hanger_id=hanger_id)
+        CreateService.create(hook)
 
-    control_box = relationship("Tag")
-    tag = relationship("Tag")
+    @staticmethod
+    def select_by_id(id=0):
+        return SimpleSelectService.select_by_id(id, Hook)
+
+    @staticmethod
+    def delete_by_id(id=0):
+        DeleteService.delete(HookService.select_by_id(id))
+
+
+class HangerService:
+
+    @staticmethod
+    def create(id=0, control_id=0):
+        hanger = Hanger(id=id, control_id=control_id)
+        CreateService.create(hanger)
+
+    @staticmethod
+    def select_by_id(id=0):
+        return SimpleSelectService.select_by_id(id, Hanger)
+
+
+class NfcService:
+
+    @staticmethod
+    def create(id=0, control_id=0):
+        nfc = Nfc(id=id, control_id=control_id)
+        CreateService.create(nfc)
+
+    @staticmethod
+    def select_by_id(id=0):
+        return SimpleSelectService.select_by_id(id, Nfc)
+
+
+class ControlBoxService:
+
+    @staticmethod
+    def create(id=0):
+        control_box = ControlBox(id=id)
+        CreateService.create(control_box)
+
+    @staticmethod
+    def select_by_id(id=0) -> ControlBox:
+        return SimpleSelectService.select_by_id(id, ControlBox)
+
+
+class TagService:
+
+    @staticmethod
+    def create(id=0, control_id=0):
+        tag = Tag(id=id, control_id=control_id)
+        CreateService.create(tag)
+
+    @staticmethod
+    def select_by_id(id=0) -> Tag:
+        return SimpleSelectService.select_by_id(id, Tag)
+
+
+class TagStateService:
+
+    @staticmethod
+    def create(id=0, tag_id=0, status="push", event_time=time.localtime()):
+        tag_state = TagState(id=id, tag_id=tag_id, status=status, event_time=event_time)
+        CreateService.create(tag_state)
+
+    @staticmethod
+    def select_by_id(id=0) -> TagState:
+        return SimpleSelectService.select_by_id(id, TagState)
+
+
+class ControlQueueService:
+
+    @staticmethod
+    def create(id=0, control_id=0, direction="in", position=0, tag_id=0):
+        control_queue = ControlQueue(id=id, control_id=control_id,
+                                     direction=direction, position=position, tag_id=tag_id)
+        CreateService.create(control_queue)
+
+    @staticmethod
+    def select_by_id(id=0) -> ControlQueue:
+        return SimpleSelectService.select_by_id(id, ControlQueue)
 
 
 if __name__ == '__main__':
     engine = create_engine("sqlite:///db.db", echo=True, future=True)
     Base.metadata.create_all(engine)
+    with Session(engine) as session:
+        control_box = ControlBoxService.select_by_id(0)
+        print(control_box)
+        hanger = HangerService.select_by_id(0)
+        if hanger is None:
+            DeleteService.delete_by_id(0, Hanger)
+            HangerService.create(id=0)
+            hanger = HangerService.select_by_id(0)
+        hanger.control_box = control_box
+        session.commit()
+        print(hanger)
+    # HookService.create(id=0, hanger_id=0)
+    # hook = HookService.select_by_id(id=0)
+    # print(hook)
