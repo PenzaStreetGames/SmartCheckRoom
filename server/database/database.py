@@ -4,16 +4,18 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
 
-from database.tables import Base, Hook, Hanger, Nfc, ControlBox, Tag, TagState, ControlQueue
+from .tables import Base, Hook, Hanger, Nfc, ControlBox, Tag, TagState, ControlQueue
 
 
 class CreateService:
 
     @staticmethod
-    def create(entity):
-        with Session(engine) as session:
-            session.add(entity)
-            session.commit()
+    def create(entity, classname):
+        # with Session(engine) as session:
+        session.add(entity)
+        session.commit()
+        return SimpleSelectService.select_by_id(entity.id, classname)
+
 
 class DeleteService:
 
@@ -45,7 +47,7 @@ class HookService:
     @staticmethod
     def create(id=0, hanger_id=0):
         hook = Hook(id=id, hanger_id=hanger_id)
-        CreateService.create(hook)
+        return CreateService.create(hook, Hook)
 
     @staticmethod
     def select_by_id(id=0):
@@ -61,7 +63,7 @@ class HangerService:
     @staticmethod
     def create(id=0, control_id=0):
         hanger = Hanger(id=id, control_id=control_id)
-        CreateService.create(hanger)
+        return CreateService.create(hanger, Hanger)
 
     @staticmethod
     def select_by_id(id=0):
@@ -73,7 +75,7 @@ class NfcService:
     @staticmethod
     def create(id=0, control_id=0):
         nfc = Nfc(id=id, control_id=control_id)
-        CreateService.create(nfc)
+        return CreateService.create(nfc, Nfc)
 
     @staticmethod
     def select_by_id(id=0):
@@ -85,7 +87,7 @@ class ControlBoxService:
     @staticmethod
     def create(id=0):
         control_box = ControlBox(id=id)
-        CreateService.create(control_box)
+        return CreateService.create(control_box, ControlBox)
 
     @staticmethod
     def select_by_id(id=0) -> ControlBox:
@@ -97,7 +99,7 @@ class TagService:
     @staticmethod
     def create(id=0, control_id=0):
         tag = Tag(id=id, control_id=control_id)
-        CreateService.create(tag)
+        return CreateService.create(tag, Tag)
 
     @staticmethod
     def select_by_id(id=0) -> Tag:
@@ -109,7 +111,7 @@ class TagStateService:
     @staticmethod
     def create(id=0, tag_id=0, status="push", event_time=time.localtime()):
         tag_state = TagState(id=id, tag_id=tag_id, status=status, event_time=event_time)
-        CreateService.create(tag_state)
+        return CreateService.create(tag_state, TagState)
 
     @staticmethod
     def select_by_id(id=0) -> TagState:
@@ -122,27 +124,27 @@ class ControlQueueService:
     def create(id=0, control_id=0, direction="in", position=0, tag_id=0):
         control_queue = ControlQueue(id=id, control_id=control_id,
                                      direction=direction, position=position, tag_id=tag_id)
-        CreateService.create(control_queue)
+        return CreateService.create(control_queue, ControlQueue)
 
     @staticmethod
     def select_by_id(id=0) -> ControlQueue:
         return SimpleSelectService.select_by_id(id, ControlQueue)
 
 
+engine = create_engine("sqlite:///db.db", echo=True, future=True)
+Base.metadata.create_all(engine)
+session = Session(engine)
+
 if __name__ == '__main__':
-    engine = create_engine("sqlite:///db.db", echo=True, future=True)
-    Base.metadata.create_all(engine)
-    with Session(engine) as session:
-        control_box = ControlBoxService.select_by_id(0)
-        print(control_box)
-        hanger = HangerService.select_by_id(0)
-        if hanger is None:
-            DeleteService.delete_by_id(0, Hanger)
-            HangerService.create(id=0)
-            hanger = HangerService.select_by_id(0)
-        hanger.control_box = control_box
-        session.commit()
-        print(hanger)
+    control_box = ControlBoxService.select_by_id(0)
+    print(control_box)
+    hanger = HangerService.select_by_id(0)
+    if hanger is not None:
+        DeleteService.delete_by_id(0, Hanger)
+    hanger = HangerService.create(id=0)
+    hanger.control_box = control_box
+    session.commit()
+    print(hanger)
     # HookService.create(id=0, hanger_id=0)
     # hook = HookService.select_by_id(id=0)
     # print(hook)

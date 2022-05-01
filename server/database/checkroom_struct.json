@@ -1,4 +1,5 @@
 {
+  "init": true,
   "control_boxes": [
     {
       "id": 1,
@@ -9,7 +10,8 @@
         {
           "id": 1,
           "hooks": {
-            ""
+            "from": 1,
+            "to": 32
           }
         }
       ]
