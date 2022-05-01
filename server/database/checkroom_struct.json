@@ -1,0 +1,18 @@
+{
+  "control_boxes": [
+    {
+      "id": 1,
+      "nfc": {
+        "id": 1
+      },
+      "hangers": [
+        {
+          "id": 1,
+          "hooks": {
+            ""
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -4,23 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5a5800b8-873c-4b46-bbcf-bc8e76e4d301" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../hooks/sketch_mar16a/sketch_mar16a.ino" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../nfc_reader/debug/sketch_apr29a/sketch_apr29a.ino" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/database/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/database/tables.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../db.db" beforeDir="false" afterPath="$PROJECT_DIR$/db.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hooks/sketch_mar16a.ino" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
-    </list>
+    <list default="true" id="5a5800b8-873c-4b46-bbcf-bc8e76e4d301" name="Changes" comment="Базы данных, ммм" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/.." value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="ProjectId" id="28OMG5QXcVcxHrd8D91pLobj6CI" />
@@ -80,8 +75,16 @@
       <updated>1651083079871</updated>
       <workItem from="1651083081085" duration="72000" />
       <workItem from="1651083170773" duration="1978000" />
-      <workItem from="1651265092781" duration="8103000" />
+      <workItem from="1651265092781" duration="8188000" />
     </task>
+    <task id="LOCAL-00001" summary="Базы данных, ммм">
+      <created>1651273530092</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1651273530092</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -98,6 +101,10 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Базы данных, ммм" />
+    <option name="LAST_COMMIT_MESSAGE" value="Базы данных, ммм" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
