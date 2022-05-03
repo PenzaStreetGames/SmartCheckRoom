@@ -47,7 +47,7 @@ class NfcService:
             if tag_entity.state != "pushed":
                 self.nfc_handler.send_tag_status(nfc_id, tag, "blocked")
                 return
-            hook_entity = tag.hook
+            hook_entity = tag_entity.hook
             also_control_box_entity = self.get_control_box_by_hook(hook_entity)
             if control_box_entity != control_box_entity:
                 self.nfc_handler.send_tag_status(nfc_id, tag, "blocked")
@@ -68,9 +68,10 @@ class NfcService:
         tag_entity = TagRepository.select_by_id(tag_id)
         return tag_entity
 
-    def get_free_queue(self, control_box: ControlBox, direction="in") -> ControlQueue:
+    @staticmethod
+    def get_free_queue(control_box: ControlBox, direction="in") -> ControlQueue:
         queues = control_box.queues
-        res = [queue for queue in queues if queue.direction == direction]
+        res = [queue for queue in queues if queue.direction == direction and queue.tag is None]
         return res[0] if res else None
 
     def get_free_hook(self, control_box: ControlBox) -> Hook:
@@ -125,11 +126,12 @@ class ControlBoxService:
             self.hooks_handler.send_hook_id_status(id=hook_entity.hanger.id, hook_id=hook_entity.id, status="pushed")
         elif status == "pulled":
             if tag_entity.state != "pull":
+                print("state not pull")
                 return
             tag_entity.state = "pulled"
             queue_entity = self.get_queue_with_tag(control_box_entity, tag_entity)
             queue_entity.tag = None
-            hook_entity.tag = None
+            hook_entity.tag = []
             tag_entity.hook = None
             NfcService.log_tag_state(tag=tag_entity)
             session_commit()
@@ -141,7 +143,11 @@ class ControlBoxService:
     def get_queue_with_tag(self, control_box: ControlBox, tag: Tag) -> ControlQueue:
         queues = control_box.queues
         for queue in queues:
+            print(queue)
             tag_in_queue: Tag = queue.tag
+            print(queue.tag)
+            if tag_in_queue is None:
+                continue
             if tag_in_queue.id == tag.id:
                 return queue
         return None

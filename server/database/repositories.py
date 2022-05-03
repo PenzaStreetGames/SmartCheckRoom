@@ -39,7 +39,7 @@ class SimpleSelectService:
         # with Session(engine) as session:
         request = select(classname).where(classname.id == id)
         entity = session.scalar(request)
-        session.commit()
+        # session.commit()
         return entity
 
 
