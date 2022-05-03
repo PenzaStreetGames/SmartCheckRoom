@@ -3,8 +3,6 @@
 #include <ArduinoJson.h> // библиотека для работы с json
 #include <String> // библиотека для работы со строками
 
-
-
 #define SERIAL_SPEED 9600 // скорость serial-порта
 #define CPU_SPEED 240 // скорость работы мк
 
@@ -37,6 +35,10 @@ buttonStruct;
 #define BUTTON_BLUE_BLINK_ID 2
 #define BUTTON_RED_BLINK_ID 3
 
+short buttonsId[] = {BUTTON_BLUE_LIGHT_ID, BUTTON_RED_LIGHT_ID, BUTTON_BLUE_BLINK_ID, BUTTON_RED_BLINK_ID};
+short buttonPins[] = {BUTTON_PIN_BLUE_LIGHT, BUTTON_PIN_RED_LIGHT, BUTTON_PIN_BLUE_BLINK, BUTTON_PIN_RED_BLINK};
+short ledPins[] = {LED_PIN_BLUE_LIGHT, LED_PIN_RED_LIGHT, LED_PIN_BLUE_BLINK, LED_PIN_RED_BLINK};
+
 static volatile buttonStruct buttons[BUTTONS_AMOUNT]; // массив с кнопками
 // 0 - верхняя левая (синяя прием горящая) - BUTTON_BLUE_LIGHT_ID
 // 1 - верхняя правая (красная прием горящая) - BUTTON_RED_LIGHT_ID
@@ -54,8 +56,8 @@ static volatile buttonStruct buttons[BUTTONS_AMOUNT]; // массив с кно�
 #define DEVICE_ID "345" // ID устрйоства "пульт"
 #define DEVICE_NAME "control" // Имя устройства "пульт"
 
-String TOPIC_READ = (String)"/" + (String)DEVICE_NAME +(String)"/" + (String)DEVICE_ID;
-String TOPIC_WRITE = (String)"/" + (String)SERVER_NAME + (String)"/" + (String)DEVICE_NAME +(String)"/" + (String)DEVICE_ID;
+String TOPIC_READ = (String)"/" + (String)DEVICE_NAME + (String)"/" + (String)DEVICE_ID;
+String TOPIC_WRITE = (String)"/" + (String)SERVER_NAME + (String)"/" + (String)DEVICE_NAME + (String)"/" + (String)DEVICE_ID;
 
 WiFiClient wifiClient; // объект доступа к wi-fi
 PubSubClient MQTTclient(wifiClient); // объект общения с mqtt сервером
@@ -86,7 +88,7 @@ bool buttonState(float avg_value) { // устранение дребезга - �
 bool readButtonValue(short pin) { // выдать значение кнопки (по pin)
     // Протестировать - может деактивировать семафор нельзя
     xSemaphoreGive(ButtonsSemaphore); // Деактивация семафора
-    
+
     bool input_array[READ_AMOUNT];
 
     for (short i = 0; i < READ_AMOUNT; i++) {
@@ -95,9 +97,9 @@ bool readButtonValue(short pin) { // выдать значение кнопки 
     }
 
     bool state = buttonState(average(input_array, READ_AMOUNT));
-    
+
     xSemaphoreTake(ButtonsSemaphore, portMAX_DELAY); // Активация семафора с большой задержкой активации
-    
+
     return state;
 }
 
@@ -114,6 +116,35 @@ static volatile long long buttons_to_tags[] = {0, 0, 0, 0};
 QueueHandle_t queue_push; // очередь на положить
 QueueHandle_t queue_pull; // очередь на снять
 
+void sendMqttMessage(int tag, String state) {
+    // нужно выключить кнопку и отправить запрос - положить
+    StaticJsonDocument<1024> doc;
+    String output = "";
+
+    JsonObject from = doc.createNestedObject("from");
+    from["type"] = DEVICE_NAME;
+    from["id"] = DEVICE_ID;
+
+    JsonObject to = doc.createNestedObject("to");
+    to["type"] = SERVER_NAME;
+    to["id"] = SERVER_ID;
+    doc["topic"] = TOPIC_WRITE;
+
+    JsonObject body = doc.createNestedObject("body");
+    body["tag"] = tag;
+    body["status"] = state; // not pulled
+
+    serializeJson(doc, output);
+
+    Serial.println(output);
+
+    xSemaphoreTake( MQTTSemaphoreKeepAlive, portMAX_DELAY ); // блокируем mqtt
+
+    MQTTclient.publish(TOPIC_WRITE.c_str(), output.c_str());
+
+    xSemaphoreGive( MQTTSemaphoreKeepAlive ); // блокируем mqtt
+}
+
 void buttonsHandler(void * pv_parameters) { // обработка включения-выключения, нажатия кнопок
     for (;;) {
 
@@ -121,13 +152,13 @@ void buttonsHandler(void * pv_parameters) { // обработка включен
         short allowed_pin_push = -1;
         short allowed_pin_pull = -1;
         xSemaphoreTake(ButtonsSemaphore, portMAX_DELAY); // Активация семафора с большой задержкой активации
-        for(int i = 0; i < BUTTONS_AMOUNT / 2; i++){
-            if (buttons[i].light_value == false){
+        for (int i = 0; i < BUTTONS_AMOUNT / 2; i++) {
+            if (buttons[i].light_value == false) {
                 allowed_pin_push = i;
             }
         }
-        for(int i = BUTTONS_AMOUNT / 2; i < BUTTONS_AMOUNT; i++){
-            if (buttons[i].light_value == false){
+        for (int i = BUTTONS_AMOUNT / 2; i < BUTTONS_AMOUNT; i++) {
+            if (buttons[i].light_value == false) {
                 allowed_pin_pull = i;
             }
         }
@@ -161,49 +192,26 @@ void buttonsHandler(void * pv_parameters) { // обработка включен
             xSemaphoreGive(ButtonsSemaphore);
         }
         // посмотрели очередь запросов и включили кнопку - идем дальше
-        
+
         xSemaphoreTake(ButtonsSemaphore, portMAX_DELAY); // Активация семафора с большой задержкой активации
 
         // Делаем работу по считыванию
         readButtonsValue(buttons);
         // Работа по считыванию завершена
 
-        for(short i = 0; i < BUTTONS_AMOUNT / 2; i++) { // Проверяем нажатость кнопок на положить
+        for (short i = 0; i < BUTTONS_AMOUNT / 2; i++) { // Проверяем нажатость кнопок на положить
             if (buttons_to_tags[i] > 0 && buttons[i].btn_value == true) { // Кнопка нажата и на ней была "задача" - какой-то тэг
                 // нужно выключить кнопку и отправить запрос - положить
-                StaticJsonDocument<1024> doc;
-                String output = "";
-
-                JsonObject from = doc.createNestedObject("from");
-                from["type"] = DEVICE_NAME;
-                from["id"] = DEVICE_ID;
-                
-                JsonObject to = doc.createNestedObject("to");
-                to["type"] = SERVER_NAME;
-                to["id"] = SERVER_ID;
-                doc["topic"] = TOPIC_WRITE;
-                
-                JsonObject body = doc.createNestedObject("body");
-                body["tag"] = buttons_to_tags[i];
-                body["status"] = "pushed"; // not pulled
-                
-                serializeJson(doc, output);
-
-                Serial.println(output);
-                
-                xSemaphoreTake( MQTTSemaphoreKeepAlive, portMAX_DELAY ); // блокируем mqtt
-
-                MQTTclient.publish(TOPIC_WRITE.c_str(), output.c_str());
-
-                xSemaphoreGive( MQTTSemaphoreKeepAlive ); // блокируем mqtt
+                send_mqtt_message(buttons_to_tags[i], "pushed");
             }
         }
-        for(short i = 0; i < BUTTONS_AMOUNT / 2; i++) { // Проверяем нажатость кнопок на забрать
+        for (short i = 0; i < BUTTONS_AMOUNT / 2; i++) { // Проверяем нажатость кнопок на забрать
             if (buttons_to_tags[i] > 0 && buttons[i].btn_value == true) { // Кнопка нажата и на ней была "задача" - какой-то тэг
                 // нужно выключить кнопку и отправить запрос - снять
+                send_mqtt_message(button_to_tags[i], "pulled");
             }
         }
-    
+
         xSemaphoreGive(ButtonsSemaphore); // Деактивация семафора
 
         delay(50);
@@ -213,7 +221,7 @@ void buttonsHandler(void * pv_parameters) { // обработка включен
 void toggleHandler(void * pv_parameters) { // мигание кнопки
     short * pin = (short *) pv_parameters;
     bool blinkingState = HIGH;
-    for(;;){
+    for (;;) {
         digitalWrite(*pin, blinkingState);
         blinkingState = !blinkingState;
         delay(1000);
@@ -230,13 +238,13 @@ void blinkHandler(void * pv_parameters) { // обработка свечение
         // но мигание обрабатывается по-разному
         short led_pin_blue_light = buttons[BUTTON_BLUE_LIGHT_ID].pin_light;
         bool light_value_blue_light = buttons[BUTTON_BLUE_LIGHT_ID].light_value ? HIGH : LOW;
-        
+
         short led_pin_red_light = buttons[BUTTON_RED_LIGHT_ID].pin_light;
         bool light_value_red_light = buttons[BUTTON_RED_LIGHT_ID].light_value ? HIGH : LOW;
-        
+
         short led_pin_blue_blink = buttons[BUTTON_BLUE_BLINK_ID].pin_light;
         bool light_value_blue_blink = buttons[BUTTON_BLUE_BLINK_ID].light_value ? HIGH : LOW;
-        
+
         short led_pin_red_blink = buttons[BUTTON_RED_BLINK_ID].pin_light;
         bool light_value_red_blink = buttons[BUTTON_RED_BLINK_ID].light_value ? HIGH : LOW;
 
@@ -249,7 +257,7 @@ void blinkHandler(void * pv_parameters) { // обработка свечение
 
         digitalWrite(led_pin_blue_light, light_value_blue_light);
         digitalWrite(led_pin_red_light, light_value_red_light);
-        for(short i = 0; i < blinking_buttons_size; i++){
+        for (short i = 0; i < blinking_buttons_size; i++) {
             if (buttons_blinking_status[i] == HIGH && buttons_blinking_handlers[i] == NULL) {
                 xTaskCreate(
                     toggleHandler,
@@ -272,29 +280,29 @@ void blinkHandler(void * pv_parameters) { // обработка свечение
 
 void mqttHandler(void * pv_parameters) { // обработка поддержания mqtt соединения (keep alive)
     xSemaphoreTake( MQTTSemaphoreKeepAlive, portMAX_DELAY );
-    
+
     MQTTclient.setKeepAlive( 45 ); // протестировать (45-90-убрать)
-    
+
     setup_wifi(); // установка wi-fi соединения
     MQTTclient.setServer(MQTT_SERVER, MQTT_PORT); // установка данных сервера
     MQTTclient.setCallback(callback); // установка функции, обрабатывающей вх. соединения
 
     xSemaphoreGive( MQTTSemaphoreKeepAlive );
-    
-    for(;;){
+
+    for (;;) {
         xSemaphoreTake( MQTTSemaphoreKeepAlive, portMAX_DELAY );
-        
-        if (!MQTTclient.connected()) { // переподключение 
+
+        if (!MQTTclient.connected()) { // переподключение
             reconnect();
         }
-        
-        /*Мусорный вывод для проверки работы MQTT
-        MQTTclient.publish(TOPIC_READ.c_str(), 
+
+        /*  Мусорный вывод для проверки работы MQTT
+            MQTTclient.publish(TOPIC_READ.c_str(),
             (
                 "s pol pinka" + String(random(300))
             ).c_str()
-        );*/
-  
+            );*/
+
         MQTTclient.loop(); // важная функция да да - частично отвечает за вызов callback
 
         xSemaphoreGive( MQTTSemaphoreKeepAlive );
@@ -332,7 +340,7 @@ void reconnect() {
             Serial.println("connected");
             // подписка на входящий топик
             MQTTclient.subscribe(TOPIC_READ.c_str());
-        } 
+        }
         else { // что-то сломалось
             Serial.print("failed, rc=");
             Serial.print(MQTTclient.state());
@@ -350,9 +358,18 @@ void pinInit(volatile buttonStruct * buttons) { // инициализация п
     }
 }
 
+void buttonInit(int index, short pinBtn, short pinLight, bool clicked, bool light) {
+    cli(); // magic tool
+    buttons[index].pin_value = pinBtn;
+    buttons[index].pin_light = pinLight;
+    buttons[index].btn_value = clicked;
+    buttons[index].light_value = light;
+    sei(); // magic tool
+}
+
 void setup() {
     delay(3000); // Чтобы быстро не запускалось
-    
+
     Serial.begin(SERIAL_SPEED); // Serial для отладки
 
     setCpuFrequencyMhz(CPU_SPEED); // установка скорости CPU
@@ -376,29 +393,33 @@ void setup() {
 
     xSemaphoreTake(ButtonsSemaphore, portMAX_DELAY); // Активация семафора с большой задержкой активации
 
-    cli(); // magic tool
+    for (int index : buttonsId)
+        buttonInit(index, buttonPins[index], ledPins[index], false, false);
 
-    buttons[BUTTON_BLUE_LIGHT_ID].pin_value = BUTTON_PIN_BLUE_LIGHT; // pin считывания
-    buttons[BUTTON_BLUE_LIGHT_ID].pin_light = LED_PIN_BLUE_LIGHT, // pin управления светом
-    buttons[BUTTON_BLUE_LIGHT_ID].btn_value = false; // кнопка не нажата по умолчанию
-    buttons[BUTTON_BLUE_LIGHT_ID].light_value = false; // кнопка горит-не горит по умолчанию (для тестов)
+    //    buttonInit(BUTTON_BLUE_LIGHT_ID, BUTTON_PIN_BLUE_LIGHT, LED_PIN_BLUE_LIGHT, false, false);
+    //    buttonInit(BUTTON_RED_LIGHT_ID, BUTTON_PIN_RED_LIGHT, LED_PIN_RED_LIGHT, false, false);
+    //    buttonInit(BUTTON_BLUE_BLINK_ID, BUTTON_PIN_BLUE_BLINK, LED_PIN_BLUE_BLINK, false, false);
+    //    buttonInit(BUTTON_RED_BLINK_ID, BUTTON_PIN_RED_BLINK, LED_PIN_RED_BLINK, false, false);
 
-    buttons[BUTTON_RED_LIGHT_ID].pin_value = BUTTON_PIN_RED_LIGHT;
-    buttons[BUTTON_RED_LIGHT_ID].pin_light = LED_PIN_RED_LIGHT;
-    buttons[BUTTON_RED_LIGHT_ID].btn_value = false;
-    buttons[BUTTON_RED_LIGHT_ID].light_value = false;
-
-    buttons[BUTTON_BLUE_BLINK_ID].pin_value = BUTTON_PIN_BLUE_BLINK;
-    buttons[BUTTON_BLUE_BLINK_ID].pin_light = LED_PIN_BLUE_BLINK;
-    buttons[BUTTON_BLUE_BLINK_ID].btn_value = false;
-    buttons[BUTTON_BLUE_BLINK_ID].light_value = false;
-
-    buttons[BUTTON_RED_BLINK_ID].pin_value = BUTTON_PIN_RED_BLINK;
-    buttons[BUTTON_RED_BLINK_ID].pin_light = LED_PIN_RED_BLINK;
-    buttons[BUTTON_RED_BLINK_ID].btn_value = false;
-    buttons[BUTTON_RED_BLINK_ID].light_value = false; // true-false!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-    sei(); // magic tool
+    //    buttons[BUTTON_BLUE_LIGHT_ID].pin_value = BUTTON_PIN_BLUE_LIGHT; // pin считывания
+    //    buttons[BUTTON_BLUE_LIGHT_ID].pin_light = LED_PIN_BLUE_LIGHT, // pin управления светом
+    //    buttons[BUTTON_BLUE_LIGHT_ID].btn_value = false; // кнопка не нажата по умолчанию
+    //    buttons[BUTTON_BLUE_LIGHT_ID].light_value = false; // кнопка горит-не горит по умолчанию (для тестов)
+    //
+    //    buttons[BUTTON_RED_LIGHT_ID].pin_value = BUTTON_PIN_RED_LIGHT;
+    //    buttons[BUTTON_RED_LIGHT_ID].pin_light = LED_PIN_RED_LIGHT;
+    //    buttons[BUTTON_RED_LIGHT_ID].btn_value = false;
+    //    buttons[BUTTON_RED_LIGHT_ID].light_value = false;
+    //
+    //    buttons[BUTTON_BLUE_BLINK_ID].pin_value = BUTTON_PIN_BLUE_BLINK;
+    //    buttons[BUTTON_BLUE_BLINK_ID].pin_light = LED_PIN_BLUE_BLINK;
+    //    buttons[BUTTON_BLUE_BLINK_ID].btn_value = false;
+    //    buttons[BUTTON_BLUE_BLINK_ID].light_value = false;
+    //
+    //    buttons[BUTTON_RED_BLINK_ID].pin_value = BUTTON_PIN_RED_BLINK;
+    //    buttons[BUTTON_RED_BLINK_ID].pin_light = LED_PIN_RED_BLINK;
+    //    buttons[BUTTON_RED_BLINK_ID].btn_value = false;
+    //    buttons[BUTTON_RED_BLINK_ID].light_value = false; // true-false!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     // Определение свойств пинов
     pinInit(buttons);
@@ -421,7 +442,7 @@ void setup() {
         "TaskBlink",
         10000,
         NULL,
-        1, 
+        1,
         &TaskBlink,
         0);
     delay(500);
@@ -431,46 +452,46 @@ void setup() {
         "TaskMQTT",
         50000,
         NULL,
-        1, 
+        1,
         &TaskMQTT,
         1);
     delay(500);
 }
 
 void loop() {
-    // тесты 
+    // тесты
 
-    /*delay(10000);
-    xSemaphoreTake(ButtonsSemaphore, portMAX_DELAY);
-    buttons[BUTTON_RED_BLINK_ID].light_value = false;
-    xSemaphoreGive(ButtonsSemaphore);
+    /*  delay(10000);
+        xSemaphoreTake(ButtonsSemaphore, portMAX_DELAY);
+        buttons[BUTTON_RED_BLINK_ID].light_value = false;
+        xSemaphoreGive(ButtonsSemaphore);
 
-    delay(3000);
-    xSemaphoreTake(ButtonsSemaphore, portMAX_DELAY);
-    buttons[BUTTON_BLUE_LIGHT_ID].light_value = false;
-    xSemaphoreGive(ButtonsSemaphore);
+        delay(3000);
+        xSemaphoreTake(ButtonsSemaphore, portMAX_DELAY);
+        buttons[BUTTON_BLUE_LIGHT_ID].light_value = false;
+        xSemaphoreGive(ButtonsSemaphore);
 
-    delay(3000);
-    xSemaphoreTake(ButtonsSemaphore, portMAX_DELAY);
-    buttons[BUTTON_BLUE_BLINK_ID].light_value = false;
-    xSemaphoreGive(ButtonsSemaphore);
+        delay(3000);
+        xSemaphoreTake(ButtonsSemaphore, portMAX_DELAY);
+        buttons[BUTTON_BLUE_BLINK_ID].light_value = false;
+        xSemaphoreGive(ButtonsSemaphore);
 
-    delay(3000);
-    xSemaphoreTake(ButtonsSemaphore, portMAX_DELAY);
-    buttons[BUTTON_RED_LIGHT_ID].light_value = false;
-    xSemaphoreGive(ButtonsSemaphore);*/
-    
-    
+        delay(3000);
+        xSemaphoreTake(ButtonsSemaphore, portMAX_DELAY);
+        buttons[BUTTON_RED_LIGHT_ID].light_value = false;
+        xSemaphoreGive(ButtonsSemaphore);*/
+
+
     vTaskDelete(NULL); // Удаление лишней задачи loop
 }
 
 void callback(char * topic, byte * message, unsigned int length) { // функция обработки взодящих сообщений
     xSemaphoreTake( MQTTSemaphoreParse, portMAX_DELAY); // для доступа в requests
-    
+
     String messageTemp;
-    
+
     for (int i = 0; i < length; i++) {
-      messageTemp += (char)message[i];
+        messageTemp += (char)message[i];
     }
 
     if (strcmp(topic, TOPIC_READ.c_str()) == 0) { // вроде всегда true, так как мы подписаны на "наш" топик, но на всякий
@@ -487,7 +508,7 @@ void callback(char * topic, byte * message, unsigned int length) { // функц
             Serial.print(" ");
             Serial.print(stat);
             Serial.println();
-            
+
             xQueueSend(queue_push, &tag, portMAX_DELAY);
         }
         else if (strcmp(stat, "pull") == 0) { // запрос на "снять"
@@ -497,10 +518,10 @@ void callback(char * topic, byte * message, unsigned int length) { // функц
             Serial.print(" ");
             Serial.print(stat);
             Serial.println();
-            
+
             xQueueSend(queue_pull, &tag, portMAX_DELAY);
         }
-        
+
     }
 
     xSemaphoreGive( MQTTSemaphoreParse );
