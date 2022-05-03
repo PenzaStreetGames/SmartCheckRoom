@@ -52,11 +52,13 @@ class NfcHandler(ServerTopicHandler):
         topics_out = f"/{modules_type}"
         super().__init__(modules_type=modules_type, topics_out=topics_out)
 
-    def send_tag_status(self, id, tag, status):
+    def send_tag_status(self, id, tag, status, reason=""):
         body = {
             "tag": tag,
             "status": status
         }
+        if reason:
+            body["reason"] = reason
         self.send_message(id, body)
 
 
