@@ -1,4 +1,6 @@
-from sqlalchemy import Column, Integer, ForeignKey, String, Time
+import datetime
+
+from sqlalchemy import Column, Integer, ForeignKey, String, Time, DateTime
 from sqlalchemy.orm import declarative_base, relationship, Session
 
 Base = declarative_base()
@@ -59,7 +61,7 @@ class Tag(Base):
     __tablename__ = "tag"
 
     id = Column(Integer, primary_key=True)
-    state = String(10)
+    state = Column(String(10))
     hook_id = Column(Integer, ForeignKey("hook.id"))
 
     hook = relationship("Hook", back_populates="tag")
@@ -73,10 +75,10 @@ class Tag(Base):
 class TagState(Base):
     __tablename__ = "tag_state"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     tag_id = Column(Integer, ForeignKey("tag.id"))
-    state = String(10)
-    event_time = Time()
+    state = Column(String(10))
+    event_time = Column(DateTime(), default=datetime.datetime.utcnow)
 
     tag = relationship("Tag", back_populates="states")
 
@@ -87,7 +89,7 @@ class TagState(Base):
 class ControlQueue(Base):
     __tablename__ = "control_queue"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     control_id = Column(Integer, ForeignKey("control_box.id"))
     direction = Column(String(4))
     position = Column(Integer)

@@ -3,6 +3,10 @@
   "control_boxes": [
     {
       "id": 1,
+      "queue": {
+        "in": 2,
+        "out": 2
+      },
       "nfc": {
         "id": 1
       },

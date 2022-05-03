@@ -1,5 +1,5 @@
 # Структура базы данных
-![](resources/db_schema.png)
+![](../resources/db_schema.png)
 
 Предполагаемый диалект - SqlLite
 
