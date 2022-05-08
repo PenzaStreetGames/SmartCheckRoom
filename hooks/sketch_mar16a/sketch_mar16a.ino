@@ -1,5 +1,5 @@
 #define PIN 13        // пин DI
-#define NUM_LEDS 53   // число диодов
+#define NUM_LEDS 50   // число диодов
 #include "Adafruit_NeoPixel.h"
 
 int led;

@@ -35,9 +35,9 @@ buttonStruct;
 #define BUTTON_BLUE_BLINK_ID 2
 #define BUTTON_RED_BLINK_ID 3
 
-short buttonsId[] = {BUTTON_BLUE_LIGHT_ID, BUTTON_RED_LIGHT_ID, BUTTON_BLUE_BLINK_ID, BUTTON_RED_BLINK_ID};
-short buttonPins[] = {BUTTON_PIN_BLUE_LIGHT, BUTTON_PIN_RED_LIGHT, BUTTON_PIN_BLUE_BLINK, BUTTON_PIN_RED_BLINK};
-short ledPins[] = {LED_PIN_BLUE_LIGHT, LED_PIN_RED_LIGHT, LED_PIN_BLUE_BLINK, LED_PIN_RED_BLINK};
+//short buttonsId[] = {BUTTON_BLUE_LIGHT_ID, BUTTON_RED_LIGHT_ID, BUTTON_BLUE_BLINK_ID, BUTTON_RED_BLINK_ID};
+//short buttonPins[] = {BUTTON_PIN_BLUE_LIGHT, BUTTON_PIN_RED_LIGHT, BUTTON_PIN_BLUE_BLINK, BUTTON_PIN_RED_BLINK};
+//short ledPins[] = {LED_PIN_BLUE_LIGHT, LED_PIN_RED_LIGHT, LED_PIN_BLUE_BLINK, LED_PIN_RED_BLINK};
 
 static volatile buttonStruct buttons[BUTTONS_AMOUNT]; // массив с кнопками
 // 0 - верхняя левая (синяя прием горящая) - BUTTON_BLUE_LIGHT_ID
@@ -63,7 +63,7 @@ WiFiClient wifiClient; // объект доступа к wi-fi
 PubSubClient MQTTclient(wifiClient); // объект общения с mqtt сервером
 
 SemaphoreHandle_t MQTTSemaphoreKeepAlive; // семафор для работы с mqtt
-SemaphoreHandle_t MQTTSemaphoreParse; // семафор для считывания данных mqtt (callback)
+//SemaphoreHandle_t MQTTSemaphoreParse; // семафор для считывания данных mqtt (callback)
 
 // многозадачность (multi-tasking)
 TaskHandle_t TaskButtons; // обновление значений кнопок
@@ -132,7 +132,7 @@ void sendMqttMessage(int tag, String state) {
 
     JsonObject body = doc.createNestedObject("body");
     body["tag"] = tag;
-    body["status"] = state; // not pulled
+    body["status"] = state; // pushed/pulled
 
     serializeJson(doc, output);
 
@@ -234,7 +234,7 @@ void blinkHandler(void * pv_parameters) { // обработка свечение
     for (;;) {
         xSemaphoreTake(ButtonsSemaphore, portMAX_DELAY); // Активация семафора с большой задержкой активации
 
-        // тут можно было сделать красивости с массивом,
+        // тут можно было сделать красивости с массивом, !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // но мигание обрабатывается по-разному
         short led_pin_blue_light = buttons[BUTTON_BLUE_LIGHT_ID].pin_light;
         bool light_value_blue_light = buttons[BUTTON_BLUE_LIGHT_ID].light_value ? HIGH : LOW;
@@ -381,8 +381,8 @@ void setup() {
     MQTTSemaphoreKeepAlive = xSemaphoreCreateBinary(); // Семафор !!! нужно останавливать во время "публикации" !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     xSemaphoreGive(MQTTSemaphoreKeepAlive);
 
-    MQTTSemaphoreParse = xSemaphoreCreateBinary(); // Семафор (не совсем нужный) ????????????????????????????????????????????????????????????????????
-    xSemaphoreGive(MQTTSemaphoreParse);
+    //MQTTSemaphoreParse = xSemaphoreCreateBinary(); // Семафор (не совсем нужный) ????????????????????????????????????????????????????????????????????
+    //xSemaphoreGive(MQTTSemaphoreParse);
 
     // Определение семафора
     ButtonsSemaphore = xSemaphoreCreateMutex();
@@ -393,6 +393,9 @@ void setup() {
 
     xSemaphoreTake(ButtonsSemaphore, portMAX_DELAY); // Активация семафора с большой задержкой активации
 
+    short buttonsId[] = {BUTTON_BLUE_LIGHT_ID, BUTTON_RED_LIGHT_ID, BUTTON_BLUE_BLINK_ID, BUTTON_RED_BLINK_ID}; // 0 1 2 3
+    short buttonPins[] = {BUTTON_PIN_BLUE_LIGHT, BUTTON_PIN_RED_LIGHT, BUTTON_PIN_BLUE_BLINK, BUTTON_PIN_RED_BLINK};
+    short ledPins[] = {LED_PIN_BLUE_LIGHT, LED_PIN_RED_LIGHT, LED_PIN_BLUE_BLINK, LED_PIN_RED_BLINK};
     for (int index : buttonsId)
         buttonInit(index, buttonPins[index], ledPins[index], false, false);
 
@@ -486,7 +489,7 @@ void loop() {
 }
 
 void callback(char * topic, byte * message, unsigned int length) { // функция обработки взодящих сообщений
-    xSemaphoreTake( MQTTSemaphoreParse, portMAX_DELAY); // для доступа в requests
+    //xSemaphoreTake( MQTTSemaphoreParse, portMAX_DELAY); // для доступа в requests
 
     String messageTemp;
 
@@ -524,5 +527,5 @@ void callback(char * topic, byte * message, unsigned int length) { // функц
 
     }
 
-    xSemaphoreGive( MQTTSemaphoreParse );
+    //xSemaphoreGive( MQTTSemaphoreParse );
 }
