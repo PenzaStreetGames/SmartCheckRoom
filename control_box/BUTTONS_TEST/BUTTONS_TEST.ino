@@ -52,7 +52,7 @@ static volatile buttonStruct buttons[BUTTONS_AMOUNT]; // массив с кно�
 
 #define SERVER_ID "1" // ID устройства "сервер"
 #define SERVER_NAME "server" // Имя устройства "сервер"
-#define DEVICE_ID "345" // ID устрйоства "пульт"
+#define DEVICE_ID "1" // ID устрйоства "пульт"
 #define DEVICE_NAME "control" // Имя устройства "пульт"
 
 String TOPIC_READ = (String)"/" + (String)DEVICE_NAME + (String)"/" + (String)DEVICE_ID;
@@ -346,7 +346,7 @@ void reconnect() {
     while (!MQTTclient.connected()) {
         Serial.print("Attempting MQTT connection...");
         // попытка подключения
-        if (MQTTclient.connect(DEVICE_ID)) {
+        if (MQTTclient.connect(((String)DEVICE_ID + (String)DEVICE_NAME).c_str())) {
             Serial.println("connected");
             // подписка на входящий топик
             MQTTclient.subscribe(TOPIC_READ.c_str());
