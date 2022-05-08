@@ -1,5 +1,5 @@
-#define PIN 13        // пин DI
-#define NUM_LEDS 53   // число диодов
+#define PIN 19        // пин DI
+#define NUM_LEDS 50   // число диодов
 #include "Adafruit_NeoPixel.h"
 
 int led;
@@ -13,6 +13,7 @@ void setup() {
   strip.clear();                          // очистить
   strip.show();                           // отправить на ленту
   led = 0;
+  
 }
 void loop() {
   strip.setPixelColor(led, 0xffffff);

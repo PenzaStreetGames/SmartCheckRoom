@@ -1,5 +1,5 @@
 import datetime
-import time
+from typing import List
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -31,6 +31,12 @@ class DeleteService:
         entity = SimpleSelectService.select_by_id(id, classname)
         DeleteService.delete(entity)
 
+    @staticmethod
+    def delete_all(entities):
+        for entity in entities:
+            session.delete(entity)
+        session.commit()
+
 
 class SimpleSelectService:
 
@@ -41,6 +47,12 @@ class SimpleSelectService:
         entity = session.scalar(request)
         # session.commit()
         return entity
+
+    @staticmethod
+    def select_all(classname):
+        request = select(classname)
+        entities = session.scalars(request)
+        return entities
 
 
 class HookRepository:
@@ -53,6 +65,10 @@ class HookRepository:
     @staticmethod
     def select_by_id(id=0):
         return SimpleSelectService.select_by_id(id, Hook)
+
+    @staticmethod
+    def select_all():
+        return SimpleSelectService.select_all(Hook)
 
     @staticmethod
     def delete_by_id(id=0):
@@ -70,6 +86,10 @@ class HangerRepository:
     def select_by_id(id=0):
         return SimpleSelectService.select_by_id(id, Hanger)
 
+    @staticmethod
+    def select_all():
+        return SimpleSelectService.select_all(Hanger)
+
 
 class NfcRepository:
 
@@ -81,6 +101,10 @@ class NfcRepository:
     @staticmethod
     def select_by_id(id=0) -> Nfc:
         return SimpleSelectService.select_by_id(id, Nfc)
+
+    @staticmethod
+    def select_all():
+        return SimpleSelectService.select_all(Nfc)
 
 
 class ControlBoxRepository:
@@ -94,6 +118,10 @@ class ControlBoxRepository:
     def select_by_id(id=0) -> ControlBox:
         return SimpleSelectService.select_by_id(id, ControlBox)
 
+    @staticmethod
+    def select_all():
+        return SimpleSelectService.select_all(ControlBox)
+
 
 class TagRepository:
 
@@ -105,6 +133,10 @@ class TagRepository:
     @staticmethod
     def select_by_id(id=0) -> Tag:
         return SimpleSelectService.select_by_id(id, Tag)
+
+    @staticmethod
+    def select_all() -> List[Tag]:
+        return SimpleSelectService.select_all(Tag)
 
 
 class TagStateRepository:
@@ -118,6 +150,10 @@ class TagStateRepository:
     def select_by_id(id=0) -> TagState:
         return SimpleSelectService.select_by_id(id, TagState)
 
+    @staticmethod
+    def select_all() -> List[TagState]:
+        return SimpleSelectService.select_all(TagState)
+
 
 class ControlQueueRepository:
 
@@ -130,6 +166,10 @@ class ControlQueueRepository:
     @staticmethod
     def select_by_id(id=0) -> ControlQueue:
         return SimpleSelectService.select_by_id(id, ControlQueue)
+
+    @staticmethod
+    def select_all() -> List[ControlQueue]:
+        return SimpleSelectService.select_all(ControlQueue)
 
 
 def session_commit():
