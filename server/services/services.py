@@ -93,7 +93,7 @@ class NfcService(Service):
                               nfc_id=nfc_entity.id, hook_id=hook_entity.id, tag=tag, status="push")
         else:
             if tag_entity.state != "pushed":
-                self.nfc_handler.send_tag_status(nfc_id, tag, "blocked")
+                self.nfc_handler.send_tag_status(nfc_id, tag, "blocked", reason="tag not pushed")
                 return
 
             hook_entity = tag_entity.hook
@@ -136,19 +136,20 @@ class ControlBoxService(Service):
         status = parsed_body["status"]
         tag_entity = TagRepository.select_by_id(id=tag)
         hook_entity = tag_entity.hook
-        control_box_entity = NfcService.get_control_box_by_hook(hook_entity)
+        control_box_entity = self.get_control_box_by_hook(hook_entity)
         if status == "pushed":
             if tag_entity.state != "push":
                 return
 
             tag_entity.state = "pushed"
+            hook_entity.tag = tag_entity
             queue_entity = self.get_queue_with_tag(control_box_entity, tag_entity)
             queue_entity.tag = None
             NfcService.log_tag_state(tag=tag_entity)
             session_commit()
 
             self.send_success(control_id=control_box_entity.id, hanger_id=hook_entity.hanger.id, hook_id=hook_entity.id,
-                              tag=tag, status="pulled")
+                              tag=tag, status="pushed")
         elif status == "pulled":
             if tag_entity.state != "pull":
                 print("state not pull")
