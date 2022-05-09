@@ -1,14 +1,14 @@
-#include "Adafruit_NeoPixel.h"
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include <WiFi.h>
 #include <String> 
-
-#define PIN 19        // пин DI
-#define NUM_LEDS 50   // число диодов
+#include "Adafruit_NeoPixel.h"
 
 #define SERIAL_SPEED 9600 // скорость serial-порта
 #define CPU_SPEED 240 // скорость работы мк
+
+#define PIN 19 // пин DI
+#define NUM_hooks 50 // число диодов
 
 #define MY_SSID "1102/3" // имя wi-fi сети
 #define MY_PASSWD "54597549" // пароль wi-fi сети
@@ -18,15 +18,24 @@
 
 #define SERVER_ID "1" // ID устройства "сервер"
 #define SERVER_NAME "server" // Имя устройства "сервер"
-#define DEVICE_ID "500" // ID устройства "крючки"
-#define HOOKS_ID "1"
+#define DEVICE_ID "1" // ID устройства "крючки"
 #define DEVICE_NAME "hooks" // Имя устройства "крючки"
 
-String TOPIC_READ = (String)"/" + (String)DEVICE_NAME + (String)"/" + (String)HOOKS_ID;
+#define RED   0xff0000
+#define GREEN 0x00ff00
+#define BLUE  0x0000ff
+#define BLACK 0x000000
+
+#define hook_from 1
+#define hook_to 32
+
+#define NUM_HOOKS hook_to - hook_from + 1
+
+String TOPIC_READ = (String)"/" + (String)DEVICE_NAME + (String)"/" + (String)DEVICE_ID;
 
 WiFiClient wifiClient; // объект доступа к wi-fi
 PubSubClient MQTTclient(wifiClient); // объект общения с mqtt сервером
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, PIN, NEO_GRB + NEO_KHZ800); // инициализация ленты
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_hooks, PIN, NEO_GRB + NEO_KHZ800); // инициализация ленты
 
 SemaphoreHandle_t MQTTSemaphoreKeepAlive; // семафор для работы с mqtt
 SemaphoreHandle_t HooksSemaphore; // семафор для работы с hooks
@@ -35,51 +44,57 @@ SemaphoreHandle_t HooksSemaphore; // семафор для работы с hooks
 TaskHandle_t TaskLed; // обновление свечения кнопок
 TaskHandle_t TaskMQTT; // общение с mqtt-сервером
 
-int red = 0xff0000;
-int black = 0x000000;
+typedef enum {
+    OFF,
+    LIGHT,
+    BLINK
+} states;
 
-int led_from = 1;
-int led_to = 32;
-
-#define NUM_HOOKS led_from - led_to
-
-struct hook {
+typedef struct {
   short hook_id; // номер крючка в гардеробе
   short led_id;  // номер светодиода на ленте
-  char* state;   // состояние крючка (off|light|blink)
+  states state;   // состояние крючка (off|light|blink)
+  bool is_light; // должна ли гореть крючек
   int color;     // цвет свечения
+} hook;
+
+static volatile hook hooks[NUM_HOOKS];
+
+void hookInit(short index, short hook_id, short led_id, states state, bool is_light, int color) {
+    cli(); // magic tool
+    hooks[index].hook_id = hook_id;
+    hooks[index].led_id = led_id;
+    hooks[index].state = state;
+    hooks[index].is_light = is_light;
+    hooks[index].color = color;
+    sei(); // magic tool
 }
 
-volatile hook hooks[NUM_LEDS]; 
-
 void setup() {
+    delay(3000);
     Serial.begin(SERIAL_SPEED); // Serial для отладки
     setCpuFrequencyMhz(CPU_SPEED); // установка скорости CPU
     Serial.println("start");
   
     strip.begin();
-    strip.setBrightness(50);    // яркость, от 0 до 255
-    strip.clear();                          // очистить
-    strip.show();                           // отправить на ленту
-    led = 0;
+    strip.setBrightness(50); // яркость, от 0 до 255
+    strip.clear(); // очистить
+    strip.show(); // отправить на ленту
 
     MQTTSemaphoreKeepAlive = xSemaphoreCreateBinary(); // Семафор !!! нужно останавливать во время "публикации" !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     xSemaphoreGive(MQTTSemaphoreKeepAlive);
 
     // Определение семафора
-    ButtonsSemaphore = xSemaphoreCreateMutex();
-    xSemaphoreGive(ButtonsSemaphore); // Деактивация семафора
+    HooksSemaphore = xSemaphoreCreateMutex();
+    xSemaphoreGive(HooksSemaphore); // Деактивация семафора
 
     // Определение структуры
     // https://stackoverflow.com/questions/41347474/how-to-initialise-a-volatile-structure-with-a-non-volatile-structure
 
     xSemaphoreTake(HooksSemaphore, portMAX_DELAY); // Активация семафора с большой задержкой активации
 
-    for (int i = 0; i < leds_to - leds_from + 1; i++) {
-        leds[i].hook_id = leds_from + i;
-        leds[i].led_id = i;
-        leds[i].state = "off";
-        leds[i].color = black;
+    for (short i = 0; i < NUM_HOOKS; i++) {
+        hookInit(i, hook_from + i, i, OFF, false, BLACK);
     }
 
     xSemaphoreGive(HooksSemaphore); // Деактивация семафора
@@ -90,7 +105,7 @@ void setup() {
         "TaskBlink",
         10000,
         NULL,
-        1,
+        0,
         &TaskLed,
         0);
     delay(500);
@@ -131,7 +146,11 @@ void reconnect() {
     while (!MQTTclient.connected()) {
         Serial.print("Attempting MQTT connection...");
         // попытка подключения
-        if (MQTTclient.connect(DEVICE_ID)) {
+        if (MQTTclient.connect(
+            (
+                (String)DEVICE_ID + (String)DEVICE_NAME
+            ).c_str())
+         ){
             Serial.println("connected");
             // подписка на входящий топик
             MQTTclient.subscribe(TOPIC_READ.c_str());
@@ -143,44 +162,6 @@ void reconnect() {
             // Wait 5 seconds before retrying
             delay(5000);
         }
-    }
-}
-
-// обработка свечения кнопок
-void blinkHandler(void * pv_parameters) {
-    int led_ms[NUM_LEDS]; // по счётчику на кнопку для поддержки мигания
-    for (int i = 0; i < led_ms.sixe(); i++) {
-        led_ms[i] = 0;  
-    }
-    blink_period = 500; // период мигания
-    handle_delay = 100; // задержка между итерациями
-    
-    while (true) {
-
-        xSemaphoreTake(HooksSemaphore, portMAX_DELAY);
-
-        for(short i = 0; i < NUM_HOOKS; i++) {
-            switch (hooks[i].state) {
-                case "off":                // крючок не горит
-                    hooks[i].color = black;
-                    break;
-                case "light":              // крючок горит
-                    hooks[i].color = red;
-                    break;
-                case "blink":              // крючок мигает
-                    led_ms[i] += handle_delay;
-                    if (led_ms[i] > blink_period) {
-                        hooks[i].color = (hooks[i].color == black ? red : black);
-                        led_ms[i] = 0; 
-                    }
-                    break;
-            }
-        }
-
-        xSemaphoreGive(HooksSemaphore);
-
-        update_tape();
-        delay(handle_delay); // задержка на всякий случай - чтобы пины быстро не переключать
     }
 }
 
@@ -201,6 +182,7 @@ void mqttHandler(void * pv_parameters) { // обработка поддержа�
         if (!MQTTclient.connected()) { // переподключение
             reconnect();
         }
+        
         MQTTclient.loop(); // важная функция да да - частично отвечает за вызов callback
 
         xSemaphoreGive( MQTTSemaphoreKeepAlive );
@@ -210,12 +192,51 @@ void mqttHandler(void * pv_parameters) { // обработка поддержа�
 }
 
 void update_tape() {
-    xSemaphoreTake(HooksSemaphore, portMAX_DELAY);
     for (int i = 0; i < NUM_HOOKS; i++) {
-        strip.setPixelColor(hooks[i].led_id, hooks[i].color);
+        if (hooks[i].is_light)
+            strip.setPixelColor(hooks[i].led_id, hooks[i].color);
     }
     strip.show();
-    xSemaphoreGive(HooksSemaphore);
+}
+
+// обработка свечения кнопок
+void blinkHandler(void * pv_parameters) {
+    int led_ms[NUM_hooks]; // по счётчику на кнопку для поддержки мигания
+    for (short i = 0; i < NUM_hooks; i++) {
+        led_ms[i] = 0;  
+    }
+    int blink_period = 500; // период мигания
+    int handle_delay = 100; // задержка между итерациями
+    
+    for(;;) {
+
+        xSemaphoreTake(HooksSemaphore, portMAX_DELAY);
+
+        for(short i = 0; i < NUM_HOOKS; i++) {
+            switch (hooks[i].state) {
+                case OFF:                // крючок не горит
+                    hooks[i].color = BLACK;
+                    hooks[i].is_light = false;
+                    break;
+                case LIGHT:              // крючок горит
+                    hooks[i].is_light = true;
+                    break;
+                case BLINK:              // крючок мигает
+                    led_ms[i] += handle_delay;
+                    if (led_ms[i] > blink_period) {
+                        hooks[i].is_light = !hooks[i].is_light;
+                        led_ms[i] = 0; 
+                    }
+                    break;
+            }
+        }
+        
+        update_tape();
+        
+        xSemaphoreGive(HooksSemaphore);
+
+        delay(handle_delay); // задержка на всякий случай - чтобы пины быстро не переключать
+    }
 }
 
 void loop() {
@@ -223,39 +244,36 @@ void loop() {
     vTaskDelete(NULL); // Удаление лишней задачи loop
 }
 
-void stripHandler(void * pv_parameters) { // обработка включения-выключения, нажатия кнопок
-    while (true) {
-        // смотрим очередь запросов
-        // queueMqttCallbackToButtonsHandler
-        if (uxQueueMessagesWaiting(queueMqttCallbackToButtonsHandler) >= 2) { // если в очереди есть Id действия + тэг
-            short taskId = -1;
-            xQueueReceive(queueMqttCallbackToButtonsHandler, &taskId, portMAX_DELAY); // получим Id действия 0 - push, 1 - pull, 2 - pushed, 3 - pulled
-            int hook_id = -1;
-            xQueueReceive(queueMqttCallbackToButtonsHandler, &hook_id, portMAX_DELAY); // получим тэг
-            int led_id = hook_id - led_from; 
-            xSemaphoreTake(ButtonsSemaphore, portMAX_DELAY);
+int charColorToIntColor(const char* color) {
+    if (strcmp(color, "red") == 0) {
+        return RED;
+    }
+    else if (strcmp(color, "green") == 0) {
+        return GREEN;
+    }
+    else if (strcmp(color, "blue") == 0) {
+        return BLUE;
+    }
+    else if (strcmp(color, "black") == 0) {
+        return BLACK;
+    }
+    return BLACK;
+}
 
-            short btnWithTag = -1;
-            
-            switch(taskId) {
-                case 0:
-                    hooks[led_id].state = "light";
-                    break;
-                case 1:
-                    hooks[led_id].state = "blink";
-                    break;
-                case 2:
-                    hooks[led_id].state = "off";
-                    break;
-                case 3:
-                    hooks[led_id].state = "off";
-                    break;
-            }
-
-            xSemaphoreGive(ButtonsSemaphore);
-        }
-        delay(50);
-    };
+states charStateToStatesState(const char* stat) {
+    if (strcmp(stat, "push") == 0) {
+        return LIGHT;
+    }
+    else if (strcmp(stat, "pushed") == 0) {
+        return OFF;
+    }
+    else if (strcmp(stat, "pull") == 0) {
+        return BLINK;
+    }
+    else if (strcmp(stat, "pulled") == 0) {
+        return OFF;
+    }
+    return OFF;
 }
 
 // функция обработки входящих сообщений
@@ -271,34 +289,23 @@ void callback(char * topic, byte * message, unsigned int length) {
         StaticJsonDocument<1024> doc;
         deserializeJson(doc, messageTemp);
 
-        int hook_id = doc["body"]["hook_id"]; // LONG !!!
-        const char* stat = doc["body"]["status"];
-        short taskId = -1;
+        short hook_id = doc["body"]["hook_id"];
+        states stat = charStateToStatesState(doc["body"]["status"]);
+        int color = charColorToIntColor(doc["body"]["color"]);
 
-        Serial.print(tag);
+        Serial.print(hook_id);
         Serial.print(" ");
         Serial.print(stat);
+        Serial.print(" ");
+        Serial.print(color);
         Serial.println();
 
-        if (strcmp(stat, "push") == 0) { // запрос на "вещь нужно повесить (ровное сияние)" - 0
-            taskId = 0;
-            xQueueSend(queueMqttCallbackToButtonsHandler, &taskId, portMAX_DELAY);
-            xQueueSend(queueMqttCallbackToButtonsHandler, &tag, portMAX_DELAY);
-        }
-        else if (strcmp(stat, "pull") == 0) { // запрос на "вещь нужно снять (мигание)" - 1
-            taskId = 1;
-            xQueueSend(queueMqttCallbackToButtonsHandler, &taskId, portMAX_DELAY);
-            xQueueSend(queueMqttCallbackToButtonsHandler, &tag, portMAX_DELAY);
-        }
-        else if (strcmp(stat, "pushed") == 0) { // запрос на "вещь повешена (отключение подсветки)" - 2
-            taskId = 2;
-            xQueueSend(queueMqttCallbackToButtonsHandler, &taskId, portMAX_DELAY);
-            xQueueSend(queueMqttCallbackToButtonsHandler, &tag, portMAX_DELAY);
-        }
-        else if (strcmp(stat, "pulled") == 0) { // запрос на "вещь выдана (отключение подсветки)" - 3
-            taskId = 3;
-            xQueueSend(queueMqttCallbackToButtonsHandler, &taskId, portMAX_DELAY);
-            xQueueSend(queueMqttCallbackToButtonsHandler, &tag, portMAX_DELAY);
-        }
+        short led_id = hook_id - hook_from;
+
+        xSemaphoreTake( HooksSemaphore, portMAX_DELAY );
+
+        hookInit(led_id, hooks[led_id].hook_id, hooks[led_id].led_id, stat, hooks[led_id].is_light, color);
+
+        xSemaphoreGive( HooksSemaphore);
     }
 }
