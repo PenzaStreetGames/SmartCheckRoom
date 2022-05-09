@@ -120,7 +120,8 @@
   "topic": "/hooks/{hooks_id}",
   "body": {
     "hook_id": 42,
-    "status": "push|pushed|pull|pulled"
+    "status": "push|pushed|pull|pulled",
+    "color": "red|green|blue"
   }
 }
 ```
@@ -128,6 +129,8 @@
 `hook_id` - номер крючка
 
 `status` - статус подсветки крючка
+
+`color` - цвет подсветки крючка
 
 Возможные статусы:
 * `push` - вещь нужно повесить (ровное сияние)
