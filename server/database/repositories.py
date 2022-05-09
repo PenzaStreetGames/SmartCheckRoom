@@ -176,7 +176,7 @@ def session_commit():
     session.commit()
 
 
-engine = create_engine("sqlite:///database/db.db", echo=True, future=True)
+engine = create_engine("sqlite:///server/database/db.db", echo=True, future=True)
 Base.metadata.create_all(engine)
 session = Session(engine)
 
