@@ -121,7 +121,7 @@
   "body": {
     "hook_id": 42,
     "status": "push|pushed|pull|pulled",
-    "color": "red|green|blue"
+    "color": "red|green|blue|black"
   }
 }
 ```
