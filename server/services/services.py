@@ -8,6 +8,12 @@ from typing import Optional
 
 class Service:
 
+    colors = {
+        0: "black",
+        1: "blue",
+        2: "red"
+    }
+
     @staticmethod
     def check_tag_exists(tag_id) -> Optional[Tag]:
         tag_entity = TagRepository.select_by_id(tag_id)
@@ -89,8 +95,9 @@ class NfcService(Service):
             free_queue.tag = tag_entity
             session_commit()
 
+            color = self.colors[free_queue.position]
             self.send_success(control_id=control_box_entity.id, hanger_id=hook_entity.hanger.id,
-                              nfc_id=nfc_entity.id, hook_id=hook_entity.id, tag=tag, status="push")
+                              nfc_id=nfc_entity.id, hook_id=hook_entity.id, tag=tag, status="push", color=color)
         else:
             if tag_entity.state != "pushed":
                 self.nfc_handler.send_tag_status(nfc_id, tag, "blocked", reason="tag not pushed")
@@ -112,12 +119,13 @@ class NfcService(Service):
             free_queue.tag = tag_entity
             session_commit()
 
+            color = self.colors[free_queue.position]
             self.send_success(control_id=control_box_entity.id, hanger_id=hook_entity.hanger.id,
-                              nfc_id=nfc_entity.id, hook_id=hook_entity.id, tag=tag, status="pull")
+                              nfc_id=nfc_entity.id, hook_id=hook_entity.id, tag=tag, status="pull", color=color)
 
-    def send_success(self, control_id, hanger_id, nfc_id, hook_id, tag, status):
+    def send_success(self, control_id, hanger_id, nfc_id, hook_id, tag, status, color):
         self.control_box_handler.send_tag_status(id=control_id, tag=tag, status=status)
-        self.hooks_handler.send_hook_id_status(id=hanger_id, hook_id=hook_id, status=status)
+        self.hooks_handler.send_hook_id_status(id=hanger_id, hook_id=hook_id, status=status, color=color)
         self.nfc_handler.send_tag_status(id=nfc_id, tag=tag, status=status)
 
 
@@ -142,14 +150,15 @@ class ControlBoxService(Service):
                 return
 
             tag_entity.state = "pushed"
-            hook_entity.tag = tag_entity
+            hook_entity.tag = [tag_entity]
             queue_entity = self.get_queue_with_tag(control_box_entity, tag_entity)
             queue_entity.tag = None
             NfcService.log_tag_state(tag=tag_entity)
             session_commit()
 
+            color = self.colors[0]
             self.send_success(control_id=control_box_entity.id, hanger_id=hook_entity.hanger.id, hook_id=hook_entity.id,
-                              tag=tag, status="pushed")
+                              tag=tag, status="pushed", color=color)
         elif status == "pulled":
             if tag_entity.state != "pull":
                 print("state not pull")
@@ -163,11 +172,12 @@ class ControlBoxService(Service):
             NfcService.log_tag_state(tag=tag_entity)
             session_commit()
 
+            color = self.colors[0]
             self.send_success(control_id=control_box_entity.id, hanger_id=hook_entity.hanger.id, hook_id=hook_entity.id,
-                              tag=tag, status="pulled")
+                              tag=tag, status="pulled", color=color)
         else:
             print(f"unknown status {status}")
 
-    def send_success(self, control_id, hanger_id, hook_id, tag, status):
+    def send_success(self, control_id, hanger_id, hook_id, tag, status, color):
         self.control_box_handler.send_tag_status(id=control_id, tag=tag, status=status)
-        self.hooks_handler.send_hook_id_status(id=hanger_id, hook_id=hook_id, status=status)
+        self.hooks_handler.send_hook_id_status(id=hanger_id, hook_id=hook_id, status=status, color=color)

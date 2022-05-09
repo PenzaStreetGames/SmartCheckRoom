@@ -69,10 +69,11 @@ class HooksHandler(ServerTopicHandler):
         topics_out = f"/{modules_type}"
         super().__init__(modules_type=modules_type, topics_out=topics_out)
 
-    def send_hook_id_status(self, id, hook_id, status):
+    def send_hook_id_status(self, id, hook_id, status, color="black"):
         body = {
             "hook_id": hook_id,
-            "status": status
+            "status": status,
+            "color": color
         }
         self.send_message(id, body)
 
