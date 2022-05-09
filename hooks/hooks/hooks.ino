@@ -196,6 +196,8 @@ void update_tape() {
     for (int i = 0; i < NUM_HOOKS; i++) {
         if (hooks[i].is_light)
             strip.setPixelColor(hooks[i].led_id, hooks[i].color);
+        else
+            strip.setPixelColor(hooks[i].led_id, BLACK);
     }
     strip.show();
 }
