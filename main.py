@@ -1,5 +1,5 @@
-from mqtt_handlers.server_handlers.all_topics_handler import AllTopicsHandler
-from mqtt_handlers.server_handlers.handlers import ControlBoxHandler, HooksHandler
+from server.mqtt_handlers.server_handlers.all_topics_handler import AllTopicsHandler
+from server.mqtt_handlers.server_handlers.handlers import ControlBoxHandler, HooksHandler
 import time
 
 if __name__ == '__main__':
