@@ -22,8 +22,8 @@
 #define DEVICE_NAME "hooks" // Имя устройства "крючки"
 
 #define RED   0xff0000
-#define GREEN 0x00ff00
-#define BLUE  0x0000ff
+#define GREEN 0x0000ff
+#define BLUE  0x00ff00
 #define BLACK 0x000000
 
 #define hook_from 1
@@ -192,6 +192,7 @@ void mqttHandler(void * pv_parameters) { // обработка поддержа�
 }
 
 void update_tape() {
+    strip.clear();
     for (int i = 0; i < NUM_HOOKS; i++) {
         if (hooks[i].is_light)
             strip.setPixelColor(hooks[i].led_id, hooks[i].color);
