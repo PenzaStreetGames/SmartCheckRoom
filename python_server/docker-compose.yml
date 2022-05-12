@@ -4,6 +4,5 @@ services:
   server:
     build: .
     restart: always
-    command: python3 main.py
     ports:
       - "1883:1883"

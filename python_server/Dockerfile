@@ -1,8 +1,7 @@
-FROM python:3.10
+FROM python:3.10-alpine
 WORKDIR /usr/src/app
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 COPY ./server ./server
 COPY ./main.py .
-EXPOSE 80
-CMD [ "python3", "main.py" ]
+CMD [ "python3", "-u", "main.py" ]

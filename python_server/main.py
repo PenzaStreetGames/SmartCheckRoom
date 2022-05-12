@@ -8,7 +8,6 @@ from server.database.repositories import get_engine_and_session
 """
 
 if __name__ == '__main__':
-    print("aaaa")
     engine, session = get_engine_and_session("server/database")
     all_topics_handler = AllTopicsHandler()
     control_box_handler = ControlBoxHandler()
