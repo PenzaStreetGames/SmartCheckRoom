@@ -1,6 +1,6 @@
 import paho.mqtt.client as mqtt
 from json import dumps, loads
-from server.settings import MQTT_HOST, MQTT_PORT
+from settings import MQTT_HOST, MQTT_PORT
 
 
 class ModuleTopicHandler:

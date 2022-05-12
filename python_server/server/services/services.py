@@ -1,7 +1,7 @@
-from server.database.repositories import NfcRepository, TagRepository, TagStateRepository, ControlBoxRepository, \
+from database.repositories import NfcRepository, TagRepository, TagStateRepository, ControlBoxRepository, \
     session_commit
-from server.mqtt_handlers.server_handlers.handlers import NfcHandler, ControlBoxHandler, HooksHandler
-from server.database.tables import *
+from mqtt_handlers.server_handlers.handlers import NfcHandler, ControlBoxHandler, HooksHandler
+from database.tables import *
 from json import dumps, loads
 from typing import Optional
 
