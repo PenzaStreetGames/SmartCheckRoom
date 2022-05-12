@@ -3,6 +3,9 @@ from server.mqtt_handlers.module_handlers.module_topic_handler import ModuleTopi
 
 
 class ControlBoxTest(ModuleTopicHandler):
+    """
+    Обработчик пульта гардеробщика
+    """
 
     def __init__(self, id):
         topic_in = f"/control/{id}"
@@ -10,6 +13,7 @@ class ControlBoxTest(ModuleTopicHandler):
         super().__init__("control", id, topic_in, topic_out)
 
     def send_tag_status(self, tag, status):
+        """Отправка на сервер сообщения об изменении статуса тега в очереди"""
         body = {
             "tag": tag,
             "status": status

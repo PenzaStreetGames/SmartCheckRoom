@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Обработчики &mdash; документация Smart Check Room 1.0.0</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/translations.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="next" title="Инструменты" href="tools.html" />
+    <link rel="prev" title="Репозитории и сущности" href="repositories.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Smart Check Room
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="services.html">Сервисы</a></li>
+<li class="toctree-l1"><a class="reference internal" href="repositories.html">Репозитории и сущности</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Обработчики</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Инструменты</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Smart Check Room</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Обработчики</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/handlers.rst.txt" rel="nofollow"> Просмотреть исходный код страницы</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1>Обработчики<a class="headerlink" href="#id1" title="Ссылка на этот заголовок"></a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<span class="target" id="module-server.mqtt_handlers.server_handlers.handlers"></span><dl class="py class">
+<dt class="sig sig-object py" id="server.mqtt_handlers.server_handlers.handlers.ControlBoxHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.mqtt_handlers.server_handlers.handlers.</span></span><span class="sig-name descname"><span class="pre">ControlBoxHandler</span></span><a class="headerlink" href="#server.mqtt_handlers.server_handlers.handlers.ControlBoxHandler" title="Ссылка на это определение"></a></dt>
+<dd><p>Обработчик сообщений, отправляемых на пульт гардеробщика</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.mqtt_handlers.server_handlers.handlers.ControlBoxHandler.send_tag_status">
+<span class="sig-name descname"><span class="pre">send_tag_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.mqtt_handlers.server_handlers.handlers.ControlBoxHandler.send_tag_status" title="Ссылка на это определение"></a></dt>
+<dd><p>Отправка сообщения пульту гардеробщика</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="server.mqtt_handlers.server_handlers.handlers.HooksHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.mqtt_handlers.server_handlers.handlers.</span></span><span class="sig-name descname"><span class="pre">HooksHandler</span></span><a class="headerlink" href="#server.mqtt_handlers.server_handlers.handlers.HooksHandler" title="Ссылка на это определение"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="server.mqtt_handlers.server_handlers.handlers.NfcHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.mqtt_handlers.server_handlers.handlers.</span></span><span class="sig-name descname"><span class="pre">NfcHandler</span></span><a class="headerlink" href="#server.mqtt_handlers.server_handlers.handlers.NfcHandler" title="Ссылка на это определение"></a></dt>
+<dd><p>Обработчик сообщений, отправляемых на NFC-датчик</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.mqtt_handlers.server_handlers.handlers.NfcHandler.send_tag_status">
+<span class="sig-name descname"><span class="pre">send_tag_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reason</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.mqtt_handlers.server_handlers.handlers.NfcHandler.send_tag_status" title="Ссылка на это определение"></a></dt>
+<dd><p>Отправка сообщения NFC-датчику</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="server.mqtt_handlers.server_handlers.handlers.ServerTopicHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.mqtt_handlers.server_handlers.handlers.</span></span><span class="sig-name descname"><span class="pre">ServerTopicHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modules_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topics_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.mqtt_handlers.server_handlers.handlers.ServerTopicHandler" title="Ссылка на это определение"></a></dt>
+<dd><p>Обработчик - набор функций, обрабатывающий данные на уровне транспортного протокола</p>
+<p>Обработчики на сервере отправляют сообщения датчикам в ответ на их сообщения</p>
+<p>Более подробно с протоколом можно ознакомиться в файле docs/protocol.md</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.mqtt_handlers.server_handlers.handlers.ServerTopicHandler.send_message">
+<span class="sig-name descname"><span class="pre">send_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">body</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.mqtt_handlers.server_handlers.handlers.ServerTopicHandler.send_message" title="Ссылка на это определение"></a></dt>
+<dd><p>Формирование и отправка сообщения на MQTT-сервер</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-server.mqtt_handlers.server_handlers.all_topics_handler"></span><dl class="py class">
+<dt class="sig sig-object py" id="server.mqtt_handlers.server_handlers.all_topics_handler.AllTopicsHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.mqtt_handlers.server_handlers.all_topics_handler.</span></span><span class="sig-name descname"><span class="pre">AllTopicsHandler</span></span><a class="headerlink" href="#server.mqtt_handlers.server_handlers.all_topics_handler.AllTopicsHandler" title="Ссылка на это определение"></a></dt>
+<dd><p>Обработчик, подписанный на все топики MQTT-сервера.</p>
+<p>Выполняет распределительную роль.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.mqtt_handlers.server_handlers.all_topics_handler.AllTopicsHandler.on_connect">
+<span class="sig-name descname"><span class="pre">on_connect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.mqtt_handlers.server_handlers.all_topics_handler.AllTopicsHandler.on_connect" title="Ссылка на это определение"></a></dt>
+<dd><p>Подписка на все топики после успешного подключения к MQTT-серверу</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="server.mqtt_handlers.server_handlers.all_topics_handler.AllTopicsHandler.on_message">
+<span class="sig-name descname"><span class="pre">on_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.mqtt_handlers.server_handlers.all_topics_handler.AllTopicsHandler.on_message" title="Ссылка на это определение"></a></dt>
+<dd><p>Обработка нового сообщения. Обрабатываются только сообщения, адресованные серверу</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-server.mqtt_handlers.module_handlers.module_topic_handler"></span><dl class="py class">
+<dt class="sig sig-object py" id="server.mqtt_handlers.module_handlers.module_topic_handler.ModuleTopicHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.mqtt_handlers.module_handlers.module_topic_handler.</span></span><span class="sig-name descname"><span class="pre">ModuleTopicHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topic_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topic_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.mqtt_handlers.module_handlers.module_topic_handler.ModuleTopicHandler" title="Ссылка на это определение"></a></dt>
+<dd><p>Обработчик модуля - имитация реального устройства, умеющая отправлять и принимать сообщения подобно устройству</p>
+<p>Используется для тестирования</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.mqtt_handlers.module_handlers.module_topic_handler.ModuleTopicHandler.on_connect">
+<span class="sig-name descname"><span class="pre">on_connect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.mqtt_handlers.module_handlers.module_topic_handler.ModuleTopicHandler.on_connect" title="Ссылка на это определение"></a></dt>
+<dd><p>Подписка на топик устройства при успешном подключении к MQTT-серверу</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="server.mqtt_handlers.module_handlers.module_topic_handler.ModuleTopicHandler.on_message">
+<span class="sig-name descname"><span class="pre">on_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.mqtt_handlers.module_handlers.module_topic_handler.ModuleTopicHandler.on_message" title="Ссылка на это определение"></a></dt>
+<dd><p>Обработка сообщения, пришедшего на датчик</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="server.mqtt_handlers.module_handlers.module_topic_handler.ModuleTopicHandler.send_message">
+<span class="sig-name descname"><span class="pre">send_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">body</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.mqtt_handlers.module_handlers.module_topic_handler.ModuleTopicHandler.send_message" title="Ссылка на это определение"></a></dt>
+<dd><p>Отправка сообщения с «датчика» на сервер</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-server.mqtt_handlers.module_handlers.modules.nfc_module"></span><dl class="py class">
+<dt class="sig sig-object py" id="server.mqtt_handlers.module_handlers.modules.nfc_module.NfcTest">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.mqtt_handlers.module_handlers.modules.nfc_module.</span></span><span class="sig-name descname"><span class="pre">NfcTest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.mqtt_handlers.module_handlers.modules.nfc_module.NfcTest" title="Ссылка на это определение"></a></dt>
+<dd><p>Обработчик NFC-считывателя</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.mqtt_handlers.module_handlers.modules.nfc_module.NfcTest.send_tag">
+<span class="sig-name descname"><span class="pre">send_tag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.mqtt_handlers.module_handlers.modules.nfc_module.NfcTest.send_tag" title="Ссылка на это определение"></a></dt>
+<dd><p>Отправка на сервер сообщения, содержащего считанную метку</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-server.mqtt_handlers.module_handlers.modules.control_box_module"></span><dl class="py class">
+<dt class="sig sig-object py" id="server.mqtt_handlers.module_handlers.modules.control_box_module.ControlBoxTest">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.mqtt_handlers.module_handlers.modules.control_box_module.</span></span><span class="sig-name descname"><span class="pre">ControlBoxTest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.mqtt_handlers.module_handlers.modules.control_box_module.ControlBoxTest" title="Ссылка на это определение"></a></dt>
+<dd><p>Обработчик пульта гардеробщика</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.mqtt_handlers.module_handlers.modules.control_box_module.ControlBoxTest.send_tag_status">
+<span class="sig-name descname"><span class="pre">send_tag_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.mqtt_handlers.module_handlers.modules.control_box_module.ControlBoxTest.send_tag_status" title="Ссылка на это определение"></a></dt>
+<dd><p>Отправка на сервер сообщения об изменении статуса тега в очереди</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Нижняя область">
+        <a href="repositories.html" class="btn btn-neutral float-left" title="Репозитории и сущности" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Предыдущая</a>
+        <a href="tools.html" class="btn btn-neutral float-right" title="Инструменты" accesskey="n" rel="next">Следующая <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Pavel Solomatin, Victor Lyashenko.</p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

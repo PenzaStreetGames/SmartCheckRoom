@@ -4,9 +4,15 @@ import paho.mqtt.client as mqtt
 from server.mqtt_handlers.server_handlers.handlers import HooksHandler, NfcHandler, ControlBoxHandler
 from server.settings import MQTT_HOST, MQTT_PORT
 from server.services.services import NfcService, ControlBoxService
+from datetime import datetime
 
 
 class AllTopicsHandler:
+    """
+    Обработчик, подписанный на все топики MQTT-сервера.
+
+    Выполняет распределительную роль.
+    """
 
     def __init__(self):
 
@@ -23,10 +29,12 @@ class AllTopicsHandler:
         self.control_box_service = ControlBoxService()
 
     def on_connect(self, client, userdata, flags, rc):
+        """Подписка на все топики после успешного подключения к MQTT-серверу"""
         print("Connected with result code " + str(rc))
         self.client.subscribe("#")
 
     def on_message(self, client, userdata, msg):
+        """Обработка нового сообщения. Обрабатываются только сообщения, адресованные серверу"""
         topic: str = msg.topic
         try:
             if topic.startswith("/server/nfc/"):
@@ -35,6 +43,6 @@ class AllTopicsHandler:
                 self.control_box_service.handle_request(msg)
         except Exception as ex:
             print(traceback.format_exc())
-        print(msg.topic + " " + str(msg.payload))
+        print(str(datetime.utcnow()) + " " + msg.topic + " " + str(msg.payload))
 
 

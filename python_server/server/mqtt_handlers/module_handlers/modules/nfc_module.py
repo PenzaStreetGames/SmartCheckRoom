@@ -2,6 +2,9 @@ from server.mqtt_handlers.module_handlers.module_topic_handler import ModuleTopi
 
 
 class NfcTest(ModuleTopicHandler):
+    """
+    Обработчик NFC-считывателя
+    """
 
     def __init__(self, id):
         topic_in = f"/nfc/{id}"
@@ -9,6 +12,7 @@ class NfcTest(ModuleTopicHandler):
         super().__init__("nfc", id, topic_in, topic_out)
 
     def send_tag(self, tag):
+        """Отправка на сервер сообщения, содержащего считанную метку"""
         body = {
             "tag": tag
         }

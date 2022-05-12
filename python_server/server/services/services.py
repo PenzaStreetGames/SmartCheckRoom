@@ -7,6 +7,9 @@ from typing import Optional
 
 
 class Service:
+    """
+    Сервис - набор операций над сущностями на уровне бизнес-логики
+    """
 
     colors = {
         0: "black",
@@ -16,17 +19,20 @@ class Service:
 
     @staticmethod
     def check_tag_exists(tag_id) -> Optional[Tag]:
+        """Проверка тега на существование. Возвращает тег или None"""
         tag_entity = TagRepository.select_by_id(tag_id)
         return tag_entity
 
     @staticmethod
     def get_free_queue(control_box: ControlBox, direction="in") -> ControlQueue:
+        """Получение свободного места в очереди. Возвращает место в очереди или None"""
         queues = control_box.queues
         res = [queue for queue in queues if queue.direction == direction and queue.tag is None]
         return res[0] if res else None
 
     @staticmethod
     def get_free_hook(control_box: ControlBox) -> Optional[Hook]:
+        """Получение свободного крючка на вешалке. Возвращает крючок или None"""
         hangers = control_box.hangers
         for hanger in hangers:
             hooks = hanger.hooks
@@ -38,17 +44,20 @@ class Service:
 
     @staticmethod
     def get_control_box_by_hook(hook: Hook) -> ControlBox:
+        """Получение пульта, обслуживающего крючок"""
         hanger = hook.hanger
         control_box = hanger.control_box
         return control_box
 
     @staticmethod
     def log_tag_state(tag: Tag) -> None:
+        """Запись в базу данных состояния тега в определённый момент времени"""
         tag_state = TagStateRepository.create(state=tag.state)
         tag_state.tag = tag
 
     @staticmethod
     def get_queue_with_tag(control_box: ControlBox, tag: Tag) -> Optional[ControlQueue]:
+        """Получение очереди на пульте, которая содержит указанный тег. Возвращает очередь или None"""
         queues = control_box.queues
         for queue in queues:
             tag_in_queue: Tag = queue.tag
@@ -60,6 +69,9 @@ class Service:
 
 
 class NfcService(Service):
+    """
+    Сервис, обрабатывающий сообщения с NFC-датчика
+    """
 
     def __init__(self):
         self.nfc_handler = NfcHandler()
@@ -67,6 +79,7 @@ class NfcService(Service):
         self.hooks_handler = HooksHandler()
 
     def handle_request(self, msg):
+        """Обработка сообщения, пришедшего от nfc-датчика"""
         topic, payload = msg.topic, msg.payload
         payload_parsed = loads(payload)
         parsed_body = payload_parsed["body"]
@@ -124,12 +137,16 @@ class NfcService(Service):
                               nfc_id=nfc_entity.id, hook_id=hook_entity.id, tag=tag, status="pull", color=color)
 
     def send_success(self, control_id, hanger_id, nfc_id, hook_id, tag, status, color):
+        """Отправка сообщений устройствам об успешной обработке метки"""
         self.control_box_handler.send_tag_status(id=control_id, tag=tag, status=status)
         self.hooks_handler.send_hook_id_status(id=hanger_id, hook_id=hook_id, status=status, color=color)
         self.nfc_handler.send_tag_status(id=nfc_id, tag=tag, status=status)
 
 
 class ControlBoxService(Service):
+    """
+    Сервис, обрабатывающий сообщения с пульта гардеробщика
+    """
 
     def __init__(self):
         self.nfc_handler = NfcHandler()
@@ -137,6 +154,7 @@ class ControlBoxService(Service):
         self.control_box_handler = ControlBoxHandler()
 
     def handle_request(self, msg):
+        """Обработка сообщения, пришедшего от пульта гардеробщика"""
         topic, payload = msg.topic, msg.payload
         payload_parsed = loads(payload)
         parsed_body = payload_parsed["body"]
@@ -179,5 +197,6 @@ class ControlBoxService(Service):
             print(f"unknown status {status}")
 
     def send_success(self, control_id, hanger_id, hook_id, tag, status, color):
+        """Отправка сообщений об успешной обработке сигнала с пульта"""
         self.control_box_handler.send_tag_status(id=control_id, tag=tag, status=status)
         self.hooks_handler.send_hook_id_status(id=hanger_id, hook_id=hook_id, status=status, color=color)

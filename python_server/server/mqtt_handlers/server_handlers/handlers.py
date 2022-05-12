@@ -4,6 +4,13 @@ from server.settings import MQTT_HOST, MQTT_PORT
 
 
 class ServerTopicHandler:
+    """
+    Обработчик - набор функций, обрабатывающий данные на уровне транспортного протокола
+
+    Обработчики на сервере отправляют сообщения датчикам в ответ на их сообщения
+
+    Более подробно с протоколом можно ознакомиться в файле docs/protocol.md
+    """
 
     def __init__(self, modules_type=None, topics_out=None):
         self.modules_type = modules_type
@@ -14,6 +21,7 @@ class ServerTopicHandler:
         self.client.loop_start()
 
     def send_message(self, id, body):
+        """Формирование и отправка сообщения на MQTT-сервер"""
         topic = f"{self.topics_out}/{id}"
         message = {
             "from": {
@@ -31,6 +39,9 @@ class ServerTopicHandler:
 
 
 class ControlBoxHandler(ServerTopicHandler):
+    """
+    Обработчик сообщений, отправляемых на пульт гардеробщика
+    """
 
     def __init__(self):
         modules_type = "control"
@@ -38,6 +49,7 @@ class ControlBoxHandler(ServerTopicHandler):
         super().__init__(modules_type=modules_type, topics_out=topics_out)
 
     def send_tag_status(self, id, tag, status):
+        """Отправка сообщения пульту гардеробщика"""
         body = {
             "tag": tag,
             "status": status
@@ -46,6 +58,9 @@ class ControlBoxHandler(ServerTopicHandler):
 
 
 class NfcHandler(ServerTopicHandler):
+    """
+    Обработчик сообщений, отправляемых на NFC-датчик
+    """
 
     def __init__(self):
         modules_type = "nfc"
@@ -53,6 +68,7 @@ class NfcHandler(ServerTopicHandler):
         super().__init__(modules_type=modules_type, topics_out=topics_out)
 
     def send_tag_status(self, id, tag, status, reason=""):
+        """Отправка сообщения NFC-датчику"""
         body = {
             "tag": tag,
             "status": status

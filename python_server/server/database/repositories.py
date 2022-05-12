@@ -1,4 +1,5 @@
 import datetime
+import traceback
 from typing import List
 
 from sqlalchemy import select
@@ -9,9 +10,13 @@ from server.database.tables import Base, Hook, Hanger, Nfc, ControlBox, Tag, Tag
 
 
 class CreateService:
+    """
+    Сервис, создающий сущности в базе данных
+    """
 
     @staticmethod
     def create(entity, classname):
+        """Метод создания сущностей"""
         # with Session(engine) as session:
         session.add(entity)
         session.commit()
@@ -19,29 +24,39 @@ class CreateService:
 
 
 class DeleteService:
+    """
+    Сервис, удаляющий сущности из базы данных
+    """
 
     @staticmethod
     def delete(entity):
+        """Метод удаления одной сущности"""
         # with Session(engine) as session:
         session.delete(entity)
         session.commit()
 
     @staticmethod
     def delete_by_id(id, classname):
+        """Метод удаления сущности по id"""
         entity = SimpleSelectService.select_by_id(id, classname)
         DeleteService.delete(entity)
 
     @staticmethod
     def delete_all(entities):
+        """Метод удаления всех сущностей, переданных в качестве параметра"""
         for entity in entities:
             session.delete(entity)
         session.commit()
 
 
 class SimpleSelectService:
+    """
+    Сервис, занимающийся выборкой сущностей из базы данных
+    """
 
     @staticmethod
     def select_by_id(id, classname):
+        """Поиск сущности по id"""
         # with Session(engine) as session:
         request = select(classname).where(classname.id == id)
         entity = session.scalar(request)
@@ -50,12 +65,18 @@ class SimpleSelectService:
 
     @staticmethod
     def select_all(classname):
+        """Метод получения всех сущностей данного класса"""
         request = select(classname)
         entities = session.scalars(request)
         return entities
 
 
 class HookRepository:
+    """
+    Сервис, работающий с сущностями класса Крючок
+
+    Методы сервиса обращаются к методам сервисов создания, удаления, выборки
+    """
 
     @staticmethod
     def create(id=0, hanger_id=0):
@@ -76,6 +97,11 @@ class HookRepository:
 
 
 class HangerRepository:
+    """
+    Сервис, работающий с сущностями класса Вешалка
+
+    Методы сервиса обращаются к методам сервисов создания, выборки
+    """
 
     @staticmethod
     def create(id=0, control_id=0):
@@ -92,6 +118,11 @@ class HangerRepository:
 
 
 class NfcRepository:
+    """
+    Сервис, работающий с сущностями класса NFC-датчик
+
+    Методы сервиса обращаются к методам сервисов создания, выборки
+    """
 
     @staticmethod
     def create(id=0, control_id=0):
@@ -108,6 +139,11 @@ class NfcRepository:
 
 
 class ControlBoxRepository:
+    """
+    Сервис, работающий с сущностями класса Пульт управления
+
+    Методы сервиса обращаются к методам сервисов создания, выборки
+    """
 
     @staticmethod
     def create(id=0):
@@ -124,6 +160,11 @@ class ControlBoxRepository:
 
 
 class TagRepository:
+    """
+    Сервис, работающий с сущностями класса Тег
+
+    Методы сервиса обращаются к методам сервисов создания, выборки
+    """
 
     @staticmethod
     def create(id=0, state="") -> Tag:
@@ -140,9 +181,14 @@ class TagRepository:
 
 
 class TagStateRepository:
+    """
+    Сервис, работающий с сущностями класса Состояние тега
+
+    Методы сервиса обращаются к методам сервисов создания, удаления, выборки
+    """
 
     @staticmethod
-    def create(id=0, tag_id=0, state="push", event_time=datetime.datetime.utcnow()) -> TagState:
+    def create(tag_id=0, state="push", event_time=datetime.datetime.utcnow()) -> TagState:
         tag_state = TagState(tag_id=tag_id, state=state, event_time=event_time)
         return CreateService.create(tag_state, TagState)
 
@@ -156,6 +202,11 @@ class TagStateRepository:
 
 
 class ControlQueueRepository:
+    """
+    Сервис, работающий с сущностями класса Очередь на пульте
+
+    Методы сервиса обращаются к методам сервисов создания, выборки
+    """
 
     @staticmethod
     def create(id=0, control_id=0, direction="in", position=0, tag_id=0) -> ControlQueue:
@@ -173,15 +224,19 @@ class ControlQueueRepository:
 
 
 def session_commit():
+    """Метод сохранения изменений в базе данных. Вызывается после завершения работы с сущностями в коде"""
     session.commit()
 
 
-engine = create_engine("sqlite:///server/database/db.db", echo=True, future=True)
-Base.metadata.create_all(engine)
-session = Session(engine)
+def get_engine_and_session(relative_path: str):
+    engine = create_engine(f"sqlite:///{relative_path}/db.db", echo=False, future=True)
+    Base.metadata.create_all(engine)
+    session = Session(engine)
+    return engine, session
+
 
 if __name__ == '__main__':
-    pass
+    engine, session = get_engine_and_session(".")
     # control_box = ControlBoxRepository.select_by_id(0)
     # print(control_box)
     # hanger = HangerRepository.select_by_id(0)
@@ -194,3 +249,8 @@ if __name__ == '__main__':
     # HookService.create(id=0, hanger_id=0)
     # hook = HookService.select_by_id(id=0)
     # print(hook)
+else:
+    try:
+        engine, session = get_engine_and_session("server/database")
+    except Exception as e:
+        print(traceback.format_exc())

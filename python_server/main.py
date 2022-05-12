@@ -1,8 +1,14 @@
 from server.mqtt_handlers.server_handlers.all_topics_handler import AllTopicsHandler
 from server.mqtt_handlers.server_handlers.handlers import ControlBoxHandler, HooksHandler
 import time
+from server.database.repositories import get_engine_and_session
+
+"""
+Чтобы сервер заработал, достаточно запустить этот скрипт
+"""
 
 if __name__ == '__main__':
+    engine, session = get_engine_and_session("server/database")
     all_topics_handler = AllTopicsHandler()
     control_box_handler = ControlBoxHandler()
     hooks_handler = HooksHandler()

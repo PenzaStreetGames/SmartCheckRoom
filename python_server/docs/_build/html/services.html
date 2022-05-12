@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Сервисы &mdash; документация Smart Check Room 1.0.0</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/translations.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="next" title="Репозитории и сущности" href="repositories.html" />
+    <link rel="prev" title="Документация SmartCheckRoom" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Smart Check Room
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Сервисы</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="repositories.html">Репозитории и сущности</a></li>
+<li class="toctree-l1"><a class="reference internal" href="handlers.html">Обработчики</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Инструменты</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Smart Check Room</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Сервисы</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/services.rst.txt" rel="nofollow"> Просмотреть исходный код страницы</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1>Сервисы<a class="headerlink" href="#id1" title="Ссылка на этот заголовок"></a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<span class="target" id="module-server.services.services"></span><dl class="py class">
+<dt class="sig sig-object py" id="server.services.services.ControlBoxService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.services.services.</span></span><span class="sig-name descname"><span class="pre">ControlBoxService</span></span><a class="headerlink" href="#server.services.services.ControlBoxService" title="Ссылка на это определение"></a></dt>
+<dd><p>Сервис, обрабатывающий сообщения с пульта гардеробщика</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.services.services.ControlBoxService.handle_request">
+<span class="sig-name descname"><span class="pre">handle_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.services.services.ControlBoxService.handle_request" title="Ссылка на это определение"></a></dt>
+<dd><p>Обработка сообщения, пришедшего от пульта гардеробщика</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="server.services.services.ControlBoxService.send_success">
+<span class="sig-name descname"><span class="pre">send_success</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">control_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hanger_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hook_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.services.services.ControlBoxService.send_success" title="Ссылка на это определение"></a></dt>
+<dd><p>Отправка сообщений об успешной обработке сигнала с пульта</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="server.services.services.NfcService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.services.services.</span></span><span class="sig-name descname"><span class="pre">NfcService</span></span><a class="headerlink" href="#server.services.services.NfcService" title="Ссылка на это определение"></a></dt>
+<dd><p>Сервис, обрабатывающий сообщения с NFC-датчика</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.services.services.NfcService.handle_request">
+<span class="sig-name descname"><span class="pre">handle_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.services.services.NfcService.handle_request" title="Ссылка на это определение"></a></dt>
+<dd><p>Обработка сообщения, пришедшего от nfc-датчика</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="server.services.services.NfcService.send_success">
+<span class="sig-name descname"><span class="pre">send_success</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">control_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hanger_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nfc_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hook_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.services.services.NfcService.send_success" title="Ссылка на это определение"></a></dt>
+<dd><p>Отправка сообщений устройствам об успешной обработке метки</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="server.services.services.Service">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.services.services.</span></span><span class="sig-name descname"><span class="pre">Service</span></span><a class="headerlink" href="#server.services.services.Service" title="Ссылка на это определение"></a></dt>
+<dd><p>Сервис - набор операций над сущностями на уровне бизнес-логики</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.services.services.Service.check_tag_exists">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_tag_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag_id</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="repositories.html#server.database.tables.Tag" title="server.database.tables.Tag"><span class="pre">server.database.tables.Tag</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#server.services.services.Service.check_tag_exists" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверка тега на существование. Возвращает тег или None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="server.services.services.Service.get_control_box_by_hook">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_control_box_by_hook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hook</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="repositories.html#server.database.tables.Hook" title="server.database.tables.Hook"><span class="pre">server.database.tables.Hook</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="repositories.html#server.database.tables.ControlBox" title="server.database.tables.ControlBox"><span class="pre">server.database.tables.ControlBox</span></a></span></span><a class="headerlink" href="#server.services.services.Service.get_control_box_by_hook" title="Ссылка на это определение"></a></dt>
+<dd><p>Получение пульта, обслуживающего крючок</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="server.services.services.Service.get_free_hook">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_free_hook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">control_box</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="repositories.html#server.database.tables.ControlBox" title="server.database.tables.ControlBox"><span class="pre">server.database.tables.ControlBox</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="repositories.html#server.database.tables.Hook" title="server.database.tables.Hook"><span class="pre">server.database.tables.Hook</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#server.services.services.Service.get_free_hook" title="Ссылка на это определение"></a></dt>
+<dd><p>Получение свободного крючка на вешалке. Возвращает крючок или None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="server.services.services.Service.get_free_queue">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_free_queue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">control_box</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="repositories.html#server.database.tables.ControlBox" title="server.database.tables.ControlBox"><span class="pre">server.database.tables.ControlBox</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'in'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="repositories.html#server.database.tables.ControlQueue" title="server.database.tables.ControlQueue"><span class="pre">server.database.tables.ControlQueue</span></a></span></span><a class="headerlink" href="#server.services.services.Service.get_free_queue" title="Ссылка на это определение"></a></dt>
+<dd><p>Получение свободного места в очереди. Возвращает место в очереди или None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="server.services.services.Service.get_queue_with_tag">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_queue_with_tag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">control_box</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="repositories.html#server.database.tables.ControlBox" title="server.database.tables.ControlBox"><span class="pre">server.database.tables.ControlBox</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="repositories.html#server.database.tables.Tag" title="server.database.tables.Tag"><span class="pre">server.database.tables.Tag</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="repositories.html#server.database.tables.ControlQueue" title="server.database.tables.ControlQueue"><span class="pre">server.database.tables.ControlQueue</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#server.services.services.Service.get_queue_with_tag" title="Ссылка на это определение"></a></dt>
+<dd><p>Получение очереди на пульте, которая содержит указанный тег. Возвращает очередь или None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="server.services.services.Service.log_tag_state">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">log_tag_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="repositories.html#server.database.tables.Tag" title="server.database.tables.Tag"><span class="pre">server.database.tables.Tag</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#server.services.services.Service.log_tag_state" title="Ссылка на это определение"></a></dt>
+<dd><p>Запись в базу данных состояния тега в определённый момент времени</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Нижняя область">
+        <a href="index.html" class="btn btn-neutral float-left" title="Документация SmartCheckRoom" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Предыдущая</a>
+        <a href="repositories.html" class="btn btn-neutral float-right" title="Репозитории и сущности" accesskey="n" rel="next">Следующая <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Pavel Solomatin, Victor Lyashenko.</p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

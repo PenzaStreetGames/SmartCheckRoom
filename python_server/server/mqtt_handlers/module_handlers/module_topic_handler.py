@@ -4,6 +4,11 @@ from server.settings import MQTT_HOST, MQTT_PORT
 
 
 class ModuleTopicHandler:
+    """
+    Обработчик модуля - имитация реального устройства, умеющая отправлять и принимать сообщения подобно устройству
+
+    Используется для тестирования
+    """
 
     def __init__(self, module, id, topic_in=None, topic_out=None):
         self.module = module
@@ -18,13 +23,16 @@ class ModuleTopicHandler:
         self.client.loop_start()
 
     def on_connect(self, client, userdata, flags, rc):
+        """Подписка на топик устройства при успешном подключении к MQTT-серверу"""
         print("Connected with result code " + str(rc))
         client.subscribe(self.topic_in)
 
     def on_message(self, client, userdata, msg):
+        """Обработка сообщения, пришедшего на датчик"""
         print(msg.topic + "\n" + str(msg.payload))
 
     def send_message(self, body):
+        """Отправка сообщения с "датчика" на сервер"""
         message = {
             "from": {
                 "type": self.module,

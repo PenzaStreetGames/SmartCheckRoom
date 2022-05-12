@@ -3,6 +3,12 @@ from repositories import *
 
 
 def init_checkroom():
+    """
+    Функция инициализации гардероба.
+
+    Создаёт структурные сущности гардероба (крючки, вешалки, пульты, nfc-датчики, очереди) по данным из файла
+    checkroom_struct.json
+    """
     config_file = "checkroom_struct.json"
 
     with open(config_file, "r", encoding="utf-8") as infile:
