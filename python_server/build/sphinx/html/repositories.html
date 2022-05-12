@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Репозитории и сущности &mdash; документация Smart Check Room 1.0.0</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/translations.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="next" title="Обработчики" href="handlers.html" />
+    <link rel="prev" title="Сервисы" href="services.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Smart Check Room
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="services.html">Сервисы</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Репозитории и сущности</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="handlers.html">Обработчики</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Инструменты</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Smart Check Room</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Репозитории и сущности</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/repositories.rst.txt" rel="nofollow"> Просмотреть исходный код страницы</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1>Репозитории и сущности<a class="headerlink" href="#id1" title="Ссылка на этот заголовок"></a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<span class="target" id="module-server.database.tables"></span><dl class="py class">
+<dt class="sig sig-object py" id="server.database.tables.ControlBox">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.database.tables.</span></span><span class="sig-name descname"><span class="pre">ControlBox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.database.tables.ControlBox" title="Ссылка на это определение"></a></dt>
+<dd><p>Пульт гардеробщика - устройство с подсвеченной клавиатурой, с помощью которого гардеробщик подтверждает факт
+приёма и выдачи одежды.</p>
+<p>Имеет только номер</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="server.database.tables.ControlQueue">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.database.tables.</span></span><span class="sig-name descname"><span class="pre">ControlQueue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.database.tables.ControlQueue" title="Ссылка на это определение"></a></dt>
+<dd><p>Очередь - поток вещей на сдачу или на выдачу, проходящий через пульт гардеробщика</p>
+<p>Имеет номер, направление (сдача, выдача), позицию.</p>
+<p>Имеет жёсткую привязку к пульту, в котором она существует. Также хранит ссылку на тег, который в ней обрабатывается</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="server.database.tables.Hanger">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.database.tables.</span></span><span class="sig-name descname"><span class="pre">Hanger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.database.tables.Hanger" title="Ссылка на это определение"></a></dt>
+<dd><p>Вешалка - пролёт в гардеробе, ряд крючков, обслуживаемых одной RGB-лентой</p>
+<p>Имеет номер, жёстко привязана к пульту гардеробщика, который её обслуживает</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="server.database.tables.Hook">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.database.tables.</span></span><span class="sig-name descname"><span class="pre">Hook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.database.tables.Hook" title="Ссылка на это определение"></a></dt>
+<dd><p>Крючок - место в гардеробе, куда вешается одежда.</p>
+<p>Имеет номер, жёстко привязан к вешалке, на которой расположен</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="server.database.tables.Nfc">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.database.tables.</span></span><span class="sig-name descname"><span class="pre">Nfc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.database.tables.Nfc" title="Ссылка на это определение"></a></dt>
+<dd><p>Nfc-датчик - устройство, считывающее nfc-метки пользователей и передающее данные о метках на сервер</p>
+<p>Имеет номер, жёстко привязана к пульту гардеробщика, который его обслуживает</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="server.database.tables.Tag">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.database.tables.</span></span><span class="sig-name descname"><span class="pre">Tag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.database.tables.Tag" title="Ссылка на это определение"></a></dt>
+<dd><p>Тег - значение, считанное с nfc-метки пользователя</p>
+<p>Имеет само значение тега и состояние, описывающее текущее положение вещи в гардеробе
+(запрошена сдача, сдана, запрошена выдача, выдана)</p>
+<p>Имеет привязку к крючку, на который эта вещь вешается.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="server.database.tables.TagState">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.database.tables.</span></span><span class="sig-name descname"><span class="pre">TagState</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.database.tables.TagState" title="Ссылка на это определение"></a></dt>
+<dd><p>Состояние тега - запись в базе данных, отражающая состояние тега в конкретный момент времени (прошлого, настоящего)</p>
+<p>Используется для логирования и отслеживания вещей в гардеробе</p>
+<p>Имеет поля: номер тега, его состояние и время, в которое это состояние было зафиксировано</p>
+</dd></dl>
+
+<span class="target" id="module-server.database.repositories"></span><dl class="py class">
+<dt class="sig sig-object py" id="server.database.repositories.ControlBoxRepository">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.database.repositories.</span></span><span class="sig-name descname"><span class="pre">ControlBoxRepository</span></span><a class="headerlink" href="#server.database.repositories.ControlBoxRepository" title="Ссылка на это определение"></a></dt>
+<dd><p>Сервис, работающий с сущностями класса Пульт управления</p>
+<p>Методы сервиса обращаются к методам сервисов создания, выборки</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="server.database.repositories.ControlQueueRepository">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.database.repositories.</span></span><span class="sig-name descname"><span class="pre">ControlQueueRepository</span></span><a class="headerlink" href="#server.database.repositories.ControlQueueRepository" title="Ссылка на это определение"></a></dt>
+<dd><p>Сервис, работающий с сущностями класса Очередь на пульте</p>
+<p>Методы сервиса обращаются к методам сервисов создания, выборки</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="server.database.repositories.CreateService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.database.repositories.</span></span><span class="sig-name descname"><span class="pre">CreateService</span></span><a class="headerlink" href="#server.database.repositories.CreateService" title="Ссылка на это определение"></a></dt>
+<dd><p>Сервис, создающий сущности в базе данных</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.database.repositories.CreateService.create">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.database.repositories.CreateService.create" title="Ссылка на это определение"></a></dt>
+<dd><p>Метод создания сущностей</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="server.database.repositories.DeleteService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.database.repositories.</span></span><span class="sig-name descname"><span class="pre">DeleteService</span></span><a class="headerlink" href="#server.database.repositories.DeleteService" title="Ссылка на это определение"></a></dt>
+<dd><p>Сервис, удаляющий сущности из базы данных</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.database.repositories.DeleteService.delete">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.database.repositories.DeleteService.delete" title="Ссылка на это определение"></a></dt>
+<dd><p>Метод удаления одной сущности</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="server.database.repositories.DeleteService.delete_all">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delete_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entities</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.database.repositories.DeleteService.delete_all" title="Ссылка на это определение"></a></dt>
+<dd><p>Метод удаления всех сущностей, переданных в качестве параметра</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="server.database.repositories.DeleteService.delete_by_id">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delete_by_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.database.repositories.DeleteService.delete_by_id" title="Ссылка на это определение"></a></dt>
+<dd><p>Метод удаления сущности по id</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="server.database.repositories.HangerRepository">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.database.repositories.</span></span><span class="sig-name descname"><span class="pre">HangerRepository</span></span><a class="headerlink" href="#server.database.repositories.HangerRepository" title="Ссылка на это определение"></a></dt>
+<dd><p>Сервис, работающий с сущностями класса Вешалка</p>
+<p>Методы сервиса обращаются к методам сервисов создания, выборки</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="server.database.repositories.HookRepository">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.database.repositories.</span></span><span class="sig-name descname"><span class="pre">HookRepository</span></span><a class="headerlink" href="#server.database.repositories.HookRepository" title="Ссылка на это определение"></a></dt>
+<dd><p>Сервис, работающий с сущностями класса Крючок</p>
+<p>Методы сервиса обращаются к методам сервисов создания, удаления, выборки</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="server.database.repositories.NfcRepository">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.database.repositories.</span></span><span class="sig-name descname"><span class="pre">NfcRepository</span></span><a class="headerlink" href="#server.database.repositories.NfcRepository" title="Ссылка на это определение"></a></dt>
+<dd><p>Сервис, работающий с сущностями класса NFC-датчик</p>
+<p>Методы сервиса обращаются к методам сервисов создания, выборки</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="server.database.repositories.SimpleSelectService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.database.repositories.</span></span><span class="sig-name descname"><span class="pre">SimpleSelectService</span></span><a class="headerlink" href="#server.database.repositories.SimpleSelectService" title="Ссылка на это определение"></a></dt>
+<dd><p>Сервис, занимающийся выборкой сущностей из базы данных</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.database.repositories.SimpleSelectService.select_all">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">select_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">classname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.database.repositories.SimpleSelectService.select_all" title="Ссылка на это определение"></a></dt>
+<dd><p>Метод получения всех сущностей данного класса</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="server.database.repositories.SimpleSelectService.select_by_id">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">select_by_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.database.repositories.SimpleSelectService.select_by_id" title="Ссылка на это определение"></a></dt>
+<dd><p>Поиск сущности по id</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="server.database.repositories.TagRepository">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.database.repositories.</span></span><span class="sig-name descname"><span class="pre">TagRepository</span></span><a class="headerlink" href="#server.database.repositories.TagRepository" title="Ссылка на это определение"></a></dt>
+<dd><p>Сервис, работающий с сущностями класса Тег</p>
+<p>Методы сервиса обращаются к методам сервисов создания, выборки</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="server.database.repositories.TagStateRepository">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.database.repositories.</span></span><span class="sig-name descname"><span class="pre">TagStateRepository</span></span><a class="headerlink" href="#server.database.repositories.TagStateRepository" title="Ссылка на это определение"></a></dt>
+<dd><p>Сервис, работающий с сущностями класса Состояние тега</p>
+<p>Методы сервиса обращаются к методам сервисов создания, удаления, выборки</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="server.database.repositories.session_commit">
+<span class="sig-prename descclassname"><span class="pre">server.database.repositories.</span></span><span class="sig-name descname"><span class="pre">session_commit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.database.repositories.session_commit" title="Ссылка на это определение"></a></dt>
+<dd><p>Метод сохранения изменений в базе данных. Вызывается после завершения работы с сущностями в коде</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Нижняя область">
+        <a href="services.html" class="btn btn-neutral float-left" title="Сервисы" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Предыдущая</a>
+        <a href="handlers.html" class="btn btn-neutral float-right" title="Обработчики" accesskey="n" rel="next">Следующая <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Pavel Solomatin, Victor Lyashenko.</p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
