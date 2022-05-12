@@ -1,9 +1,9 @@
-version: "3"
+version: "3.9"
 
 services:
   server:
     build: .
+    command: python3 -u main.py
     restart: always
-    command: python3 main.py
     ports:
       - "1883:1883"

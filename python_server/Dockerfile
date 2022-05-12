@@ -4,5 +4,3 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 COPY ./server ./server
 COPY ./main.py .
-EXPOSE 80
-CMD [ "python3", "main.py" ]
