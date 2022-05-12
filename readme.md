@@ -28,10 +28,33 @@
 
 Установка зависимостей
 ```
-
+cd python_server
+pip3 install -r requirements.txt
 ```
 
 Запуск
 ```
-python python_server/main.py
+python3 main.py
+```
+
+Сборка колеса
+```
+python3 -m build
+```
+
+Установка колеса
+```
+cd dist
+pip install SmartCheckRoom-0.0.1-py3-none-any.whl 
+```
+
+Использование колеса
+```
+python3 -m server.main
+```
+
+Сборка документации
+```
+cd ..
+python setup.py build_sphinx
 ```
