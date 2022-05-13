@@ -1,13 +1,16 @@
-from server.mqtt_handlers.server_handlers.all_topics_handler import AllTopicsHandler
-from server.mqtt_handlers.server_handlers.handlers import ControlBoxHandler, HooksHandler
+from mqtt_handlers.server_handlers.all_topics_handler import AllTopicsHandler
+from mqtt_handlers.server_handlers.handlers import ControlBoxHandler, HooksHandler
 import time
+from database.init_checkroom import *
 
 if __name__ == '__main__':
     all_topics_handler = AllTopicsHandler()
     control_box_handler = ControlBoxHandler()
     hooks_handler = HooksHandler()
+    # init_checkroom()
     while True:
         pass
+
         # for i in range(1, 33):
         #     hooks_handler.send_hook_id_status(1, hook_id=i, status="push", color="red")
         #     time.sleep(5)

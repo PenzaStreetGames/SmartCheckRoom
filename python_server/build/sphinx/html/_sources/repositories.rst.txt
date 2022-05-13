@@ -8,5 +8,3 @@
 .. automodule:: server.database.tables
    :members:
 
-.. automodule:: server.database.repositories
-   :members:

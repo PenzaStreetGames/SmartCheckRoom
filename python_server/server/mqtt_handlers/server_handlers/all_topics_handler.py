@@ -1,9 +1,9 @@
 import traceback
 
 import paho.mqtt.client as mqtt
-from server.mqtt_handlers.server_handlers.handlers import HooksHandler, NfcHandler, ControlBoxHandler
-from server.settings import MQTT_HOST, MQTT_PORT
-from server.services.services import NfcService, ControlBoxService
+from mqtt_handlers.server_handlers.handlers import HooksHandler, NfcHandler, ControlBoxHandler
+from settings import MQTT_HOST, MQTT_PORT
+from services.services import NfcService, ControlBoxService
 from datetime import datetime
 
 

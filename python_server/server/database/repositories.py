@@ -6,7 +6,8 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
 
-from server.database.tables import Base, Hook, Hanger, Nfc, ControlBox, Tag, TagState, ControlQueue
+from database.tables import Base, Hook, Hanger, Nfc, ControlBox, Tag, TagState, ControlQueue
+from database.session import *
 
 
 class CreateService:
@@ -228,15 +229,8 @@ def session_commit():
     session.commit()
 
 
-def get_engine_and_session(relative_path: str):
-    engine = create_engine(f"sqlite:///{relative_path}/db.db", echo=False, future=True)
-    Base.metadata.create_all(engine)
-    session = Session(engine)
-    return engine, session
-
-
 if __name__ == '__main__':
-    engine, session = get_engine_and_session(".")
+    pass
     # control_box = ControlBoxRepository.select_by_id(0)
     # print(control_box)
     # hanger = HangerRepository.select_by_id(0)
@@ -249,8 +243,3 @@ if __name__ == '__main__':
     # HookService.create(id=0, hanger_id=0)
     # hook = HookService.select_by_id(id=0)
     # print(hook)
-else:
-    try:
-        engine, session = get_engine_and_session("server/database")
-    except Exception as e:
-        print(traceback.format_exc())

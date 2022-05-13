@@ -1,5 +1,5 @@
 import paho.mqtt.client as mqtt
-from server.mqtt_handlers.module_handlers.module_topic_handler import ModuleTopicHandler
+from mqtt_handlers.module_handlers.module_topic_handler import ModuleTopicHandler
 
 
 class ControlBoxTest(ModuleTopicHandler):

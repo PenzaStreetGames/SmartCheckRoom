@@ -14,8 +14,8 @@
 .. automodule:: server.mqtt_handlers.module_handlers.module_topic_handler
    :members:
 
-.. automodule:: server.mqtt_handlers.module_handlers.modules.nfc_module
+.. automodule:: server.mqtt_handlers.module_handlers.nfc_module
    :members:
 
-.. automodule:: server.mqtt_handlers.module_handlers.modules.control_box_module
+.. automodule:: server.mqtt_handlers.module_handlers.control_box_module
    :members:

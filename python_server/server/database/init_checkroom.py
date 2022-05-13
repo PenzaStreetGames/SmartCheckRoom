@@ -1,5 +1,5 @@
 from json import loads, dumps
-from repositories import *
+from database.repositories import *
 
 
 def init_checkroom():
@@ -9,7 +9,7 @@ def init_checkroom():
     Создаёт структурные сущности гардероба (крючки, вешалки, пульты, nfc-датчики, очереди) по данным из файла
     checkroom_struct.json
     """
-    config_file = "checkroom_struct.json"
+    config_file = "database/checkroom_struct.json"
 
     with open(config_file, "r", encoding="utf-8") as infile:
         struct = loads(infile.read())

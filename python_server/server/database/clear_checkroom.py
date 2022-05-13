@@ -1,4 +1,4 @@
-from server.database.repositories import *
+from database.repositories import *
 
 
 def clear_checkroom():

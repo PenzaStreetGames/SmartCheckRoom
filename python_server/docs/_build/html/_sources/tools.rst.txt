@@ -5,8 +5,8 @@
    :maxdepth: 2
    :caption: Contents:
 
-.. automodule:: init_checkroom
+.. automodule:: server.database.init_checkroom
    :members:
 
-.. automodule:: clear_checkroom
+.. automodule:: server.database.clear_checkroom
    :members:
