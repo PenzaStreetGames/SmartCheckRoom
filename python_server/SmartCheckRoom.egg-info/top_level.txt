@@ -1,3 +1,4 @@
+server
 server/database
 server/mqtt_handlers
 server/mqtt_handlers/module_handlers

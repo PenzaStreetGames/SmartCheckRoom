@@ -12,6 +12,7 @@ server/database/clear_checkroom.py
 server/database/db.db
 server/database/init_checkroom.py
 server/database/repositories.py
+server/database/session.py
 server/database/tables.py
 server/mqtt_handlers/__init__.py
 server/mqtt_handlers/module_handlers/__init__.py
@@ -29,6 +30,7 @@ server/database/clear_checkroom.py
 server/database/db.db
 server/database/init_checkroom.py
 server/database/repositories.py
+server/database/session.py
 server/database/tables.py
 server/mqtt_handlers/__init__.py
 server/mqtt_handlers/module_handlers/__init__.py

@@ -7,7 +7,8 @@ release = '0.0.1'
 setup(
     name='SmartCheckRoom',
     version='0.0.1',
-    packages=['server/mqtt_handlers',
+    packages=['server',
+              'server/mqtt_handlers',
               'server/mqtt_handlers/server_handlers',
               'server/mqtt_handlers/module_handlers',
               'server/database',
